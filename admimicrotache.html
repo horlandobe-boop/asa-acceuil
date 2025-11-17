@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Mikotse Plateforme</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #dbeafe;
+      --secondary: #64748b;
+      --accent: #f1f5f9;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* Auth Pages */
+    .auth-container {
+      max-width: 400px;
+      margin: 2rem auto;
+      padding: 2rem;
+    }
+
+    .auth-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+
+    .auth-logo {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .auth-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .auth-btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 1rem;
+    }
+
+    .auth-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Main Container */
+    .main-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.25rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Admin Panel */
+    .admin-panel {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .admin-section {
+      margin-bottom: 2rem;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .admin-table th {
+      background: var(--accent);
+      font-weight: 600;
+    }
+
+    .admin-table tr:hover {
+      background: var(--accent);
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: var(--warning);
+      color: white;
+    }
+
+    .status-confirmed {
+      background: var(--success);
+      color: white;
+    }
+
+    .status-expired {
+      background: var(--error);
+      color: white;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .tab {
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+    }
+
+    .tab.active {
+      border-bottom-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Nouveaux styles pour le formulaire vidéo amélioré */
+    .video-form-container {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    /* Styles pour le modal d'édition */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    /* Styles pour l'affichage des vidéos */
+    .video-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: var(--surface);
+    }
+
+    .video-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .video-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .video-meta {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .video-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    /* Style pour le bouton d'inscription */
+    .registration-btn {
+      display: inline-block;
+      background: var(--success);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .registration-btn:hover {
+      background: #0da271;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-container {
+        margin: 1rem auto;
+        padding: 0 1rem;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .nav-container {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .admin-table {
+        font-size: 0.8rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      .video-actions {
+        flex-direction: column;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Login Page -->
+  <div id="adminLoginPage">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <h1 class="auth-title">Accès Administrateur</h1>
+        <p class="auth-subtitle">Entrez le code d'accès administrateur</p>
+        
+        <form id="adminLoginForm">
+          <div class="form-group">
+            <label class="form-label">Code d'accès</label>
+            <input type="password" class="form-input" id="adminCode" required>
+          </div>
+          
+          <button type="submit" class="auth-btn">Accéder au panel admin</button>
+        </form>
+        
+        <p><a href="index.html" class="auth-link">Retour à la plateforme utilisateur</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Panel Page -->
+  <div id="adminPanelPage" style="display: none;">
+    <header>
+      <div class="header-content">
+        <div class="logo">
+          <i class="fas fa-user-shield"></i>
+          <span>Administration Mikotse</span>
+        </div>
+        
+        <div class="nav-container">
+          <div class="nav-link" style="background: rgba(255, 255, 255, 0.2);">
+            <i class="fas fa-user"></i>
+            <span id="adminWelcome">Administrateur</span>
+          </div>
+          <a class="nav-link" href="index.html">
+            <i class="fas fa-home"></i>
+            Plateforme Utilisateur
+          </a>
+          <a class="nav-link" href="#" onclick="logoutAdmin()">
+            <i class="fas fa-sign-out-alt"></i>
+            Déconnexion
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <!-- Statistics -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="totalUsers">0</div>
+          <div class="stat-label">Utilisateurs Totaux</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="pendingPayments">0</div>
+          <div class="stat-label">Paiements en Attente</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="confirmedPayments">0</div>
+          <div class="stat-label">Paiements Confirmés</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalVideos">0</div>
+          <div class="stat-label">Vidéos en Ligne</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active" onclick="showTab('payments')">Gestion des Paiements</div>
+        <div class="tab" onclick="showTab('videos')">Gestion des Vidéos</div>
+        <div class="tab" onclick="showTab('users')">Gestion des Utilisateurs</div>
+      </div>
+
+      <!-- Payments Tab -->
+      <div id="paymentsTab" class="tab-content active">
+        <div class="admin-section">
+          <h3 class="card-title">Paiements en Attente de Confirmation</h3>
+          <div class="card">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Utilisateur</th>
+                  <th>Email</th>
+                  <th>Plan</th>
+                  <th>Montant</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pendingPaymentsTable">
+                <!-- Pending payments will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h3 class="card-title">Historique des Paiements</h3>
+          <div class="card">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Utilisateur</th>
+                  <th>Plan</th>
+                  <th>Montant</th>
+                  <th>Statut</th>
+                  <th>Date Paiement</th>
+                  <th>Date Confirmation</th>
+                </tr>
+              </thead>
+              <tbody id="paymentsHistoryTable">
+                <!-- Payments history will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Videos Tab - MODIFIÉE -->
+      <div id="videosTab" class="tab-content">
+        <div class="admin-section">
+          <h3 class="card-title">Ajouter une Nouvelle Vidéo</h3>
+          <div class="video-form-container">
+            <form id="videoForm">
+              <div class="form-group">
+                <label class="form-label">1. Titre de la vidéo *</label>
+                <input type="text" class="form-input" id="videoTitle" required placeholder="Entrez le titre de la vidéo">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">2. Lien de visionnage direct *</label>
+                <input type="url" class="form-input" id="videoUrl" required placeholder="https://example.com/video.mp4">
+                <small style="color: var(--text-muted); margin-top: 0.25rem; display: block;">
+                  Ce lien sera affiché directement sur la page pour visionner la vidéo
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Lien de téléchargement (optionnel)</label>
+                <input type="url" class="form-input" id="videoDownloadUrl" placeholder="https://example.com/video.zip">
+                <small style="color: var(--text-muted); margin-top: 0.25rem; display: block;">
+                  Lien pour télécharger la vidéo (optionnel)
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">3. Lien d'inscription (optionnel)</label>
+                <input type="url" class="form-input" id="videoRegistrationUrl" placeholder="https://example.com/register">
+                <small style="color: var(--text-muted); margin-top: 0.25rem; display: block;">
+                  Ce lien sera affiché sous forme de bouton sous la vidéo
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-input" id="videoDescription" rows="3" placeholder="Description de la vidéo..."></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Catégorie</label>
+                <select class="form-input" id="videoCategory">
+                  <option value="formation">Formation</option>
+                  <option value="tutoriel">Tutoriel</option>
+                  <option value="demonstration">Démonstration</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+              
+              <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Ajouter la vidéo</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h3 class="card-title">Vidéos Existantes</h3>
+          <div class="card">
+            <div id="adminVideosList">
+              <!-- Existing videos will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users Tab -->
+      <div id="usersTab" class="tab-content">
+        <div class="admin-section">
+          <h3 class="card-title">Liste des Utilisateurs</h3>
+          <div class="card">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Email</th>
+                  <th>Date d'inscription</th>
+                  <th>Statut Abonnement</th>
+                  <th>Jours Restants</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable">
+                <!-- Users will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal d'édition de vidéo -->
+  <div id="editVideoModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Modifier la vidéo</h3>
+        <button class="close-modal" onclick="closeEditModal()">&times;</button>
+      </div>
+      <form id="editVideoForm">
+        <input type="hidden" id="editVideoId">
+        
+        <div class="form-group">
+          <label class="form-label">1. Titre de la vidéo *</label>
+          <input type="text" class="form-input" id="editVideoTitle" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">2. Lien de visionnage direct *</label>
+          <input type="url" class="form-input" id="editVideoUrl" required>
+          <small style="color: var(--text-muted); margin-top: 0.25rem; display: block;">
+            Ce lien sera affiché directement sur la page pour visionner la vidéo
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Lien de téléchargement (optionnel)</label>
+          <input type="url" class="form-input" id="editVideoDownloadUrl">
+          <small style="color: var(--text-muted); margin-top: 0.25rem; display: block;">
+            Lien pour télécharger la vidéo (optionnel)
+          </small>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">3. Lien d'inscription (optionnel)</label>
+          <input type="url" class="form-input" id="editVideoRegistrationUrl">
+          <small style="color: var(--text-muted); margin-top: 0.25rem; display: block;">
+            Ce lien sera affiché sous forme de bouton sous la vidéo
+          </small>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-input" id="editVideoDescription" rows="3"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Catégorie</label>
+          <select class="form-input" id="editVideoCategory">
+            <option value="formation">Formation</option>
+            <option value="tutoriel">Tutoriel</option>
+            <option value="demonstration">Démonstration</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary">Mettre à jour</button>
+          <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBtq50XttR1S-f9RMo0otxx5jrRiY30QEE",
+      authDomain: "miasamada-4f90a.firebaseapp.com",
+      databaseURL: "https://miasamada-4f90a-default-rtdb.firebaseio.com",
+      projectId: "miasamada-4f90a",
+      storageBucket: "miasamada-4f90a.firebasestorage.app",
+      messagingSenderId: "341483369374",
+      appId: "1:341483369374:web:721451eb0df21d4ef45c8f",
+      measurementId: "G-XTH1TCS8H4"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    // Admin code
+    const ADMIN_CODE = "080600";
+
+    // Initialize the admin panel
+    function initAdmin() {
+      setupAdminEventListeners();
+      
+      // Check if admin is already logged in
+      const adminLoggedIn = localStorage.getItem('adminLoggedIn');
+      if (adminLoggedIn === 'true') {
+        showAdminPanel();
+      }
+    }
+
+    // Setup event listeners
+    function setupAdminEventListeners() {
+      document.getElementById('adminLoginForm').addEventListener('submit', handleAdminLogin);
+      document.getElementById('videoForm').addEventListener('submit', handleAddVideo);
+      document.getElementById('editVideoForm').addEventListener('submit', handleUpdateVideo);
+    }
+
+    // Handle admin login
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      
+      const code = document.getElementById('adminCode').value;
+      
+      if (code === ADMIN_CODE) {
+        localStorage.setItem('adminLoggedIn', 'true');
+        showAdminPanel();
+      } else {
+        alert('Code d\'accès incorrect');
+      }
+    }
+
+    // Show admin panel
+    function showAdminPanel() {
+      document.getElementById('adminLoginPage').style.display = 'none';
+      document.getElementById('adminPanelPage').style.display = 'block';
+      loadAdminData();
+    }
+
+    // Load admin data
+    function loadAdminData() {
+      loadStatistics();
+      loadPendingPayments();
+      loadPaymentsHistory();
+      loadAdminVideos();
+      loadUsers();
+    }
+
+    // Load statistics
+    function loadStatistics() {
+      // Total users
+      const usersRef = db.ref('users');
+      usersRef.on('value', (snapshot) => {
+        const users = snapshot.val();
+        document.getElementById('totalUsers').textContent = users ? Object.keys(users).length : 0;
+      });
+
+      // Pending payments
+      const pendingRef = db.ref('payments').orderByChild('status').equalTo('pending');
+      pendingRef.on('value', (snapshot) => {
+        const payments = snapshot.val();
+        document.getElementById('pendingPayments').textContent = payments ? Object.keys(payments).length : 0;
+      });
+
+      // Confirmed payments
+      const confirmedRef = db.ref('payments').orderByChild('status').equalTo('confirmed');
+      confirmedRef.on('value', (snapshot) => {
+        const payments = snapshot.val();
+        document.getElementById('confirmedPayments').textContent = payments ? Object.keys(payments).length : 0;
+      });
+
+      // Total videos
+      const videosRef = db.ref('videos');
+      videosRef.on('value', (snapshot) => {
+        const videos = snapshot.val();
+        document.getElementById('totalVideos').textContent = videos ? Object.keys(videos).length : 0;
+      });
+    }
+
+    // Load pending payments
+    function loadPendingPayments() {
+      const paymentsRef = db.ref('payments').orderByChild('status').equalTo('pending');
+      paymentsRef.on('value', (snapshot) => {
+        const payments = snapshot.val();
+        const pendingTable = document.getElementById('pendingPaymentsTable');
+        pendingTable.innerHTML = '';
+
+        if (!payments) {
+          pendingTable.innerHTML = '<tr><td colspan="6">Aucun paiement en attente</td></tr>';
+          return;
+        }
+
+        Object.entries(payments).forEach(([paymentId, payment]) => {
+          // Get user data
+          const userRef = db.ref('users/' + payment.userId);
+          userRef.once('value', (userSnapshot) => {
+            const user = userSnapshot.val();
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${escapeHtml(user ? user.name : 'Utilisateur inconnu')}</td>
+              <td>${escapeHtml(user ? user.email : 'N/A')}</td>
+              <td>${escapeHtml(payment.plan)}</td>
+              <td>${payment.amount} Ar</td>
+              <td>${formatTime(payment.createdAt)}</td>
+              <td>
+                <button class="auth-btn" onclick="confirmPayment('${paymentId}', '${payment.userId}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; margin-right: 0.5rem;">
+                  Confirmer
+                </button>
+                <button class="auth-btn" onclick="rejectPayment('${paymentId}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; background: var(--error);">
+                  Rejeter
+                </button>
+              </td>
+            `;
+            pendingTable.appendChild(row);
+          });
+        });
+      });
+    }
+
+    // Load payments history
+    function loadPaymentsHistory() {
+      const paymentsRef = db.ref('payments').orderByChild('createdAt');
+      paymentsRef.on('value', (snapshot) => {
+        const payments = snapshot.val();
+        const historyTable = document.getElementById('paymentsHistoryTable');
+        historyTable.innerHTML = '';
+
+        if (!payments) {
+          historyTable.innerHTML = '<tr><td colspan="6">Aucun historique de paiement</td></tr>';
+          return;
+        }
+
+        // Convert to array and sort by date (newest first)
+        const paymentsArray = Object.entries(payments).map(([id, payment]) => ({ id, ...payment }));
+        paymentsArray.sort((a, b) => b.createdAt - a.createdAt);
+
+        paymentsArray.forEach(payment => {
+          const userRef = db.ref('users/' + payment.userId);
+          userRef.once('value', (userSnapshot) => {
+            const user = userSnapshot.val();
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${escapeHtml(user ? user.name : 'Utilisateur inconnu')}</td>
+              <td>${escapeHtml(payment.plan)}</td>
+              <td>${payment.amount} Ar</td>
+              <td>
+                <span class="status-badge ${payment.status === 'confirmed' ? 'status-confirmed' : payment.status === 'pending' ? 'status-pending' : 'status-expired'}">
+                  ${payment.status === 'confirmed' ? 'Confirmé' : payment.status === 'pending' ? 'En attente' : 'Expiré'}
+                </span>
+              </td>
+              <td>${formatTime(payment.createdAt)}</td>
+              <td>${payment.confirmedAt ? formatTime(payment.confirmedAt) : 'N/A'}</td>
+            `;
+            historyTable.appendChild(row);
+          });
+        });
+      });
+    }
+
+    // Confirm payment
+    function confirmPayment(paymentId, userId) {
+      const paymentRef = db.ref('payments/' + userId);
+      paymentRef.update({
+        status: 'confirmed',
+        confirmedAt: Date.now(),
+        confirmedBy: 'admin'
+      }).then(() => {
+        alert('Paiement confirmé avec succès!');
+        
+        // Create notification for user
+        const notificationRef = db.ref(`notifications/${userId}`).push();
+        notificationRef.set({
+          type: 'payment',
+          text: 'Votre paiement a été confirmé. Vous pouvez maintenant accéder à la plateforme.',
+          timestamp: Date.now(),
+          read: false
+        });
+      });
+    }
+
+    // Reject payment
+    function rejectPayment(paymentId) {
+      if (confirm('Êtes-vous sûr de vouloir rejeter ce paiement?')) {
+        const paymentRef = db.ref('payments/' + paymentId);
+        paymentRef.update({
+          status: 'rejected',
+          rejectedAt: Date.now(),
+          rejectedBy: 'admin'
+        }).then(() => {
+          alert('Paiement rejeté!');
+        });
+      }
+    }
+
+    // Handle add video - MODIFIÉ
+    function handleAddVideo(e) {
+      e.preventDefault();
+      
+      const title = document.getElementById('videoTitle').value;
+      const url = document.getElementById('videoUrl').value;
+      const downloadUrl = document.getElementById('videoDownloadUrl').value;
+      const registrationUrl = document.getElementById('videoRegistrationUrl').value;
+      const description = document.getElementById('videoDescription').value;
+      const category = document.getElementById('videoCategory').value;
+
+      const videoRef = db.ref('videos').push();
+      videoRef.set({
+        title: title,
+        url: url,
+        downloadUrl: downloadUrl,
+        registrationUrl: registrationUrl,
+        description: description,
+        category: category,
+        createdAt: Date.now(),
+        addedBy: 'admin'
+      }).then(() => {
+        alert('Vidéo ajoutée avec succès!');
+        document.getElementById('videoForm').reset();
+        loadAdminVideos();
+      });
+    }
+
+    // Load admin videos - MODIFIÉ
+    function loadAdminVideos() {
+      const videosRef = db.ref('videos').orderByChild('createdAt');
+      videosRef.on('value', (snapshot) => {
+        const videos = snapshot.val();
+        const adminVideosList = document.getElementById('adminVideosList');
+        adminVideosList.innerHTML = '';
+
+        if (!videos) {
+          adminVideosList.innerHTML = '<p>Aucune vidéo disponible</p>';
+          return;
+        }
+
+        // Convert to array and sort by date (newest first)
+        const videosArray = Object.entries(videos).map(([id, video]) => ({ id, ...video }));
+        videosArray.sort((a, b) => b.createdAt - a.createdAt);
+
+        videosArray.forEach(video => {
+          const videoElement = document.createElement('div');
+          videoElement.className = 'video-item';
+          videoElement.innerHTML = `
+            <div class="video-header">
+              <div style="flex: 1;">
+                <div class="video-title">${escapeHtml(video.title)}</div>
+                <div class="video-meta">
+                  <strong>Catégorie:</strong> ${video.category} | 
+                  <strong>Ajouté le:</strong> ${formatTime(video.createdAt)}
+                </div>
+                ${video.description ? `<div style="margin-top: 0.5rem;">${escapeHtml(video.description)}</div>` : ''}
+                <div style="margin-top: 0.5rem;">
+                  <strong>Lien visionnage:</strong> <a href="${video.url}" target="_blank">${video.url}</a>
+                </div>
+                ${video.downloadUrl ? `<div><strong>Lien téléchargement:</strong> <a href="${video.downloadUrl}" target="_blank">${video.downloadUrl}</a></div>` : ''}
+                ${video.registrationUrl ? `<div><strong>Lien inscription:</strong> <a href="${video.registrationUrl}" target="_blank">${video.registrationUrl}</a></div>` : ''}
+              </div>
+              <span class="status-badge" style="background: var(--primary); color: white;">
+                ${video.category}
+              </span>
+            </div>
+            <div class="video-actions">
+              <button class="btn btn-primary" onclick="editVideo('${video.id}')" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                <i class="fas fa-edit"></i> Modifier
+              </button>
+              <button class="btn" onclick="deleteVideo('${video.id}')" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: var(--error); color: white;">
+                <i class="fas fa-trash"></i> Supprimer
+              </button>
+            </div>
+          `;
+          adminVideosList.appendChild(videoElement);
+        });
+      });
+    }
+
+    // Edit video - NOUVELLE FONCTION
+    function editVideo(videoId) {
+      const videoRef = db.ref('videos/' + videoId);
+      videoRef.once('value', (snapshot) => {
+        const video = snapshot.val();
+        if (video) {
+          document.getElementById('editVideoId').value = videoId;
+          document.getElementById('editVideoTitle').value = video.title || '';
+          document.getElementById('editVideoUrl').value = video.url || '';
+          document.getElementById('editVideoDownloadUrl').value = video.downloadUrl || '';
+          document.getElementById('editVideoRegistrationUrl').value = video.registrationUrl || '';
+          document.getElementById('editVideoDescription').value = video.description || '';
+          document.getElementById('editVideoCategory').value = video.category || 'formation';
+          
+          document.getElementById('editVideoModal').style.display = 'flex';
+        }
+      });
+    }
+
+    // Handle update video - NOUVELLE FONCTION
+    function handleUpdateVideo(e) {
+      e.preventDefault();
+      
+      const videoId = document.getElementById('editVideoId').value;
+      const title = document.getElementById('editVideoTitle').value;
+      const url = document.getElementById('editVideoUrl').value;
+      const downloadUrl = document.getElementById('editVideoDownloadUrl').value;
+      const registrationUrl = document.getElementById('editVideoRegistrationUrl').value;
+      const description = document.getElementById('editVideoDescription').value;
+      const category = document.getElementById('editVideoCategory').value;
+
+      const videoRef = db.ref('videos/' + videoId);
+      videoRef.update({
+        title: title,
+        url: url,
+        downloadUrl: downloadUrl,
+        registrationUrl: registrationUrl,
+        description: description,
+        category: category,
+        updatedAt: Date.now(),
+        updatedBy: 'admin'
+      }).then(() => {
+        alert('Vidéo mise à jour avec succès!');
+        closeEditModal();
+        loadAdminVideos();
+      });
+    }
+
+    // Close edit modal - NOUVELLE FONCTION
+    function closeEditModal() {
+      document.getElementById('editVideoModal').style.display = 'none';
+      document.getElementById('editVideoForm').reset();
+    }
+
+    // Delete video - MODIFIÉ
+    function deleteVideo(videoId) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette vidéo?')) {
+        const videoRef = db.ref('videos/' + videoId);
+        videoRef.remove().then(() => {
+          alert('Vidéo supprimée avec succès!');
+        });
+      }
+    }
+
+    // Load users
+    function loadUsers() {
+      const usersRef = db.ref('users');
+      usersRef.on('value', (snapshot) => {
+        const users = snapshot.val();
+        const usersTable = document.getElementById('usersTable');
+        usersTable.innerHTML = '';
+
+        if (!users) {
+          usersTable.innerHTML = '<tr><td colspan="6">Aucun utilisateur inscrit</td></tr>';
+          return;
+        }
+
+        Object.entries(users).forEach(([userId, user]) => {
+          // Get payment status for this user
+          const paymentRef = db.ref('payments/' + userId);
+          paymentRef.once('value', (paymentSnapshot) => {
+            const payment = paymentSnapshot.val();
+            let status = 'Non payé';
+            let daysRemaining = 0;
+            let statusClass = 'status-pending';
+
+            if (payment && payment.status === 'confirmed') {
+              status = 'Actif';
+              const confirmedAt = payment.confirmedAt;
+              const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+              const now = Date.now();
+              const elapsed = now - confirmedAt;
+              const remainingMs = thirtyDaysInMs - elapsed;
+              daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
+              
+              if (daysRemaining <= 0) {
+                status = 'Expiré';
+                statusClass = 'status-expired';
+              } else {
+                statusClass = 'status-confirmed';
+              }
+            }
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${escapeHtml(user.name)}</td>
+              <td>${escapeHtml(user.email)}</td>
+              <td>${formatTime(user.createdAt)}</td>
+              <td><span class="status-badge ${statusClass}">${status}</span></td>
+              <td>${daysRemaining > 0 ? daysRemaining + ' jours' : 'N/A'}</td>
+              <td>
+                <button class="auth-btn" onclick="viewUserDetails('${userId}')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+                  Détails
+                </button>
+              </td>
+            `;
+            usersTable.appendChild(row);
+          });
+        });
+      });
+    }
+
+    // View user details (placeholder function)
+    function viewUserDetails(userId) {
+      alert('Détails de l\'utilisateur: ' + userId + '\nCette fonctionnalité sera implémentée prochainement.');
+    }
+
+    // Show tab
+    function showTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active class from all tabs
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabName + 'Tab').classList.add('active');
+      
+      // Add active class to clicked tab
+      event.currentTarget.classList.add('active');
+    }
+
+    // Logout admin
+    function logoutAdmin() {
+      localStorage.removeItem('adminLoggedIn');
+      document.getElementById('adminPanelPage').style.display = 'none';
+      document.getElementById('adminLoginPage').style.display = 'block';
+      document.getElementById('adminCode').value = '';
+    }
+
+    // Utility function to escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Format timestamp to readable time
+    function formatTime(timestamp) {
+      if (!timestamp) return 'N/A';
+      
+      const now = new Date();
+      const time = new Date(timestamp);
+      const diffMs = now - time;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      
+      if (diffMins < 1) return 'Maintenant';
+      if (diffMins < 60) return `Il y a ${diffMins} min`;
+      if (diffHours < 24) return `Il y a ${diffHours} h`;
+      
+      return time.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    // Initialize the admin panel when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initAdmin);
+  </script>
+</body>
+</html>
