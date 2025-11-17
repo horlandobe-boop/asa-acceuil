@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique PDF Gratuite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --purple-color: #9b59b6;
+            --gray-light: #f8f9fa;
+            --gray-medium: #e9ecef;
+            --gray-dark: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .section {
+            padding: 2rem 0;
+            display: none;
+        }
+        
+        .active-section {
+            display: block;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark-color);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 3px;
+        }
+        
+        /* Section publique */
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            display: flex;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 30px;
+            overflow: hidden;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            font-size: 1rem;
+            background-color: white;
+        }
+        
+        .search-bar button {
+            padding: 12px 25px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .search-bar button:hover {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+        }
+        
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .pdf-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .pdf-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+        }
+        
+        .pdf-card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .pdf-card-header:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            transform: rotate(45deg);
+        }
+        
+        .pdf-card-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        
+        .pdf-description {
+            color: var(--gray-dark);
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .pdf-card-footer {
+            padding: 15px 20px;
+            background-color: var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--gray-medium);
+        }
+        
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, var(--accent-color), #c0392b);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(to right, #c0392b, var(--accent-color));
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(to right, var(--success-color), #27ae60);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(to right, #27ae60, var(--success-color));
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(to right, var(--warning-color), #e67e22);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: linear-gradient(to right, #e67e22, var(--warning-color));
+            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+        }
+        
+        /* Section admin */
+        .admin-login {
+            max-width: 450px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-medium);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .admin-panel {
+            display: none;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .admin-table th, .admin-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .admin-table th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: 600;
+        }
+        
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .admin-table tr:hover {
+            background-color: var(--gray-light);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-dark);
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Commentaires */
+        .comments-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid var(--gray-medium);
+        }
+        
+        .comment-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .comment-form input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-medium);
+            border-radius: 30px;
+            font-size: 1rem;
+        }
+        
+        .comment-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .comment {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray-medium);
+            background-color: var(--gray-light);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .comment:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .comment-date {
+            color: var(--gray-dark);
+            font-size: 0.85rem;
+        }
+        
+        .comment-text {
+            margin-bottom: 10px;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .reply-btn, .like-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
+        }
+        
+        .reply-btn:hover, .like-btn:hover {
+            color: var(--secondary-color);
+        }
+        
+        .replies {
+            margin-left: 30px;
+            margin-top: 15px;
+            padding-left: 15px;
+            border-left: 2px solid var(--gray-medium);
+        }
+        
+        .reply-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .reply-form input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--gray-medium);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        /* User modal */
+        .user-modal {
+            text-align: center;
+        }
+        
+        .user-modal h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .user-modal p {
+            margin-bottom: 1.5rem;
+            color: var(--gray-dark);
+        }
+        
+        .avatar-selection {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .avatar-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .avatar-option.selected {
+            border-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+        
+        .avatar-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .pdf-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-actions {
+                flex-direction: column;
+            }
+            
+            .comment-form, .reply-form {
+                flex-direction: column;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal de bienvenue -->
+    <div id="welcome-modal" class="modal">
+        <div class="modal-content user-modal">
+            <h3>Bienvenue sur la Boutique PDF Gratuite</h3>
+            <p>Veuillez entrer votre nom pour personnaliser votre expérience</p>
+            <div class="form-group">
+                <input type="text" id="user-name" placeholder="Votre nom" maxlength="20">
+            </div>
+            <p>Choisissez votre avatar</p>
+            <div class="avatar-selection">
+                <div class="avatar-option selected" data-avatar="1">
+                    <img src="https://i.pravatar.cc/150?img=1" alt="Avatar 1">
+                </div>
+                <div class="avatar-option" data-avatar="2">
+                    <img src="https://i.pravatar.cc/150?img=2" alt="Avatar 2">
+                </div>
+                <div class="avatar-option" data-avatar="3">
+                    <img src="https://i.pravatar.cc/150?img=3" alt="Avatar 3">
+                </div>
+            </div>
+            <button id="save-user" class="btn btn-primary">Commencer à explorer</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-book-open"></i>
+                    <span>Boutique PDF</span>
+                </div>
+                <nav class="nav-links">
+                    <a href="#" id="nav-public">PDFs Publics</a>
+                    <a href="#" id="nav-admin">Admin</a>
+                </nav>
+                <div class="user-info" id="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="user-display-name">Invité</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Section Publique -->
+        <section id="public-section" class="section active-section">
+            <h2 class="section-title">PDFs Gratuits Disponibles</h2>
+            
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Rechercher un PDF...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div id="pdf-grid" class="pdf-grid">
+                <!-- Les PDFs seront affichés ici dynamiquement -->
+            </div>
+        </section>
+
+        <!-- Section Admin -->
+        <section id="admin-section" class="section">
+            <h2 class="section-title">Administration</h2>
+            
+            <div id="admin-login" class="admin-login">
+                <h3>Connexion Admin</h3>
+                <div class="form-group">
+                    <label for="admin-code">Code d'accès</label>
+                    <input type="password" id="admin-code" placeholder="Entrez le code d'accès">
+                </div>
+                <button id="login-btn" class="btn btn-primary">Se connecter</button>
+            </div>
+            
+            <div id="admin-panel" class="admin-panel">
+                <h3>Ajouter un nouveau PDF</h3>
+                <form id="add-pdf-form">
+                    <div class="form-group">
+                        <label for="pdf-name">Nom du fichier</label>
+                        <input type="text" id="pdf-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pdf-link">Lien du PDF</label>
+                        <input type="url" id="pdf-link" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pdf-category">Catégorie</label>
+                        <select id="pdf-category">
+                            <option value="education">Éducation</option>
+                            <option value="business">Business</option>
+                            <option value="technology">Technologie</option>
+                            <option value="health">Santé</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pdf-description">Description</label>
+                        <textarea id="pdf-description" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Ajouter PDF</button>
+                </form>
+                
+                <h3 style="margin-top: 2rem;">PDFs existants</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Catégorie</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-pdf-list">
+                        <!-- Les PDFs pour l'admin seront affichés ici -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal pour afficher les détails d'un PDF -->
+    <div id="pdf-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Détails du PDF</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="modal-body">
+                <!-- Contenu du modal -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal des statistiques utilisateur -->
+    <div id="user-stats-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Vos Statistiques</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-downloads">0</span>
+                    <span class="stat-label">Téléchargements</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-comments">0</span>
+                    <span class="stat-label">Commentaires</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-likes">0</span>
+                    <span class="stat-label">J'aime</span>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button id="close-stats" class="btn btn-primary">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">
+                    <i class="fas fa-book-open"></i>
+                    <span>Boutique PDF Gratuite</span>
+                </div>
+                <p>Des ressources gratuites pour tous. Partagez et apprenez sans limites.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+                <p>&copy; 2023 Boutique PDF Gratuite - Tous droits réservés</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    
+    <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtq50XttR1S-f9RMo0otxx5jrRiY30QEE",
+            authDomain: "miasamada-4f90a.firebaseapp.com",
+            databaseURL: "https://miasamada-4f90a-default-rtdb.firebaseio.com",
+            projectId: "miasamada-4f90a",
+            storageBucket: "miasamada-4f90a.firebasestorage.app",
+            messagingSenderId: "341483369374",
+            appId: "1:341483369374:web:721451eb0df21d4ef45c8f",
+            measurementId: "G-XTH1TCS8H4"
+        };
+
+        // Initialisation Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Références aux éléments DOM
+        const welcomeModal = document.getElementById('welcome-modal');
+        const userInfo = document.getElementById('user-info');
+        const userDisplayName = document.getElementById('user-display-name');
+        const userNameInput = document.getElementById('user-name');
+        const saveUserBtn = document.getElementById('save-user');
+        const avatarOptions = document.querySelectorAll('.avatar-option');
+        const navPublic = document.getElementById('nav-public');
+        const navAdmin = document.getElementById('nav-admin');
+        const publicSection = document.getElementById('public-section');
+        const adminSection = document.getElementById('admin-section');
+        const pdfGrid = document.getElementById('pdf-grid');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const adminLogin = document.getElementById('admin-login');
+        const adminPanel = document.getElementById('admin-panel');
+        const adminCode = document.getElementById('admin-code');
+        const loginBtn = document.getElementById('login-btn');
+        const addPdfForm = document.getElementById('add-pdf-form');
+        const adminPdfList = document.getElementById('admin-pdf-list');
+        const pdfModal = document.getElementById('pdf-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const closeModal = document.querySelectorAll('.close-modal');
+        const userStatsModal = document.getElementById('user-stats-modal');
+        const closeStatsBtn = document.getElementById('close-stats');
+
+        // Variables globales
+        let pdfs = [];
+        let currentPdfId = null;
+        let currentUser = {
+            name: '',
+            avatar: '1',
+            downloads: 0,
+            comments: 0,
+            likes: 0
+        };
+        let selectedAvatar = '1';
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            // Vérifier si l'utilisateur existe déjà
+            const savedUser = localStorage.getItem('pdfUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUserDisplay();
+            } else {
+                // Afficher le modal de bienvenue
+                welcomeModal.style.display = 'flex';
+            }
+            
+            loadPublicPdfs();
+            
+            // Événements pour les avatars
+            avatarOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    avatarOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedAvatar = option.getAttribute('data-avatar');
+                });
+            });
+            
+            // Sauvegarder les informations utilisateur
+            saveUserBtn.addEventListener('click', () => {
+                if (userNameInput.value.trim() === '') {
+                    alert('Veuillez entrer votre nom');
+                    return;
+                }
+                
+                currentUser.name = userNameInput.value.trim();
+                currentUser.avatar = selectedAvatar;
+                localStorage.setItem('pdfUser', JSON.stringify(currentUser));
+                updateUserDisplay();
+                welcomeModal.style.display = 'none';
+            });
+            
+            // Afficher les statistiques utilisateur
+            userInfo.addEventListener('click', () => {
+                document.getElementById('stat-downloads').textContent = currentUser.downloads;
+                document.getElementById('stat-comments').textContent = currentUser.comments;
+                document.getElementById('stat-likes').textContent = currentUser.likes;
+                userStatsModal.style.display = 'flex';
+            });
+            
+            closeStatsBtn.addEventListener('click', () => {
+                userStatsModal.style.display = 'none';
+            });
+        });
+
+        // Mettre à jour l'affichage utilisateur
+        function updateUserDisplay() {
+            userDisplayName.textContent = currentUser.name;
+            // Mettre à jour l'avatar dans l'en-tête
+            const userIcon = userInfo.querySelector('i');
+            userIcon.className = `fas fa-user-circle`;
+        }
+
+        // Navigation entre sections
+        navPublic.addEventListener('click', () => {
+            publicSection.classList.add('active-section');
+            adminSection.classList.remove('active-section');
+        });
+
+        navAdmin.addEventListener('click', () => {
+            publicSection.classList.remove('active-section');
+            adminSection.classList.add('active-section');
+        });
+
+        // Connexion admin
+        loginBtn.addEventListener('click', () => {
+            if (adminCode.value === '080600') {
+                adminLogin.style.display = 'none';
+                adminPanel.style.display = 'block';
+                loadAdminPdfs();
+            } else {
+                alert('Code d\'accès incorrect!');
+            }
+        });
+
+        // Chargement des PDFs publics
+        function loadPublicPdfs() {
+            database.ref('pdfs').on('value', (snapshot) => {
+                pdfs = [];
+                pdfGrid.innerHTML = '';
+                
+                if (!snapshot.exists()) {
+                    pdfGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">Aucun PDF disponible pour le moment.</p>';
+                    return;
+                }
+                
+                snapshot.forEach((childSnapshot) => {
+                    const pdf = {
+                        id: childSnapshot.key,
+                        ...childSnapshot.val()
+                    };
+                    pdfs.push(pdf);
+                    
+                    const pdfCard = document.createElement('div');
+                    pdfCard.className = 'pdf-card';
+                    pdfCard.innerHTML = `
+                        <div class="pdf-card-header">
+                            <h4>${pdf.name}</h4>
+                            <span class="pdf-category">${pdf.category || 'Général'}</span>
+                        </div>
+                        <div class="pdf-card-body">
+                            <p class="pdf-description">${pdf.description}</p>
+                            <div class="pdf-meta">
+                                <small><i class="far fa-calendar"></i> ${formatDate(pdf.dateAdded)}</small>
+                            </div>
+                        </div>
+                        <div class="pdf-card-footer">
+                            <button class="btn btn-primary btn-sm view-pdf" data-id="${pdf.id}">
+                                <i class="fas fa-eye"></i> Détails
+                            </button>
+                            <button class="btn btn-success btn-sm download-pdf" data-link="${pdf.link}">
+                                <i class="fas fa-download"></i> Télécharger
+                            </button>
+                        </div>
+                    `;
+                    pdfGrid.appendChild(pdfCard);
+                });
+                
+                // Ajout des événements pour les boutons
+                document.querySelectorAll('.view-pdf').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const pdfId = e.target.closest('.view-pdf').getAttribute('data-id');
+                        showPdfDetails(pdfId);
+                    });
+                });
+                
+                document.querySelectorAll('.download-pdf').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const pdfLink = e.target.closest('.download-pdf').getAttribute('data-link');
+                        window.open(pdfLink, '_blank');
+                        // Mettre à jour les statistiques de téléchargement
+                        currentUser.downloads++;
+                        localStorage.setItem('pdfUser', JSON.stringify(currentUser));
+                    });
+                });
+            });
+        }
+
+        // Chargement des PDFs pour l'admin
+        function loadAdminPdfs() {
+            database.ref('pdfs').on('value', (snapshot) => {
+                adminPdfList.innerHTML = '';
+                
+                if (!snapshot.exists()) {
+                    adminPdfList.innerHTML = '<tr><td colspan="4" style="text-align: center;">Aucun PDF disponible.</td></tr>';
+                    return;
+                }
+                
+                snapshot.forEach((childSnapshot) => {
+                    const pdf = {
+                        id: childSnapshot.key,
+                        ...childSnapshot.val()
+                    };
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${pdf.name}</td>
+                        <td>${pdf.category || 'Général'}</td>
+                        <td>${pdf.description.substring(0, 50)}${pdf.description.length > 50 ? '...' : ''}</td>
+                        <td class="admin-actions">
+                            <button class="btn btn-primary btn-sm edit-pdf" data-id="${pdf.id}">
+                                <i class="fas fa-edit"></i> Modifier
+                            </button>
+                            <button class="btn btn-danger btn-sm delete-pdf" data-id="${pdf.id}">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </td>
+                    `;
+                    adminPdfList.appendChild(row);
+                });
+                
+                // Ajout des événements pour les boutons
+                document.querySelectorAll('.edit-pdf').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const pdfId = e.target.closest('.edit-pdf').getAttribute('data-id');
+                        editPdf(pdfId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-pdf').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const pdfId = e.target.closest('.delete-pdf').getAttribute('data-id');
+                        deletePdf(pdfId);
+                    });
+                });
+            });
+        }
+
+        // Ajout d'un PDF
+        addPdfForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('pdf-name').value;
+            const link = document.getElementById('pdf-link').value;
+            const category = document.getElementById('pdf-category').value;
+            const description = document.getElementById('pdf-description').value;
+            
+            const newPdfRef = database.ref('pdfs').push();
+            newPdfRef.set({
+                name: name,
+                link: link,
+                category: category,
+                description: description,
+                dateAdded: new Date().toISOString()
+            }).then(() => {
+                alert('PDF ajouté avec succès!');
+                addPdfForm.reset();
+            }).catch((error) => {
+                alert('Erreur lors de l\'ajout: ' + error.message);
+            });
+        });
+
+        // Modification d'un PDF
+        function editPdf(pdfId) {
+            const pdf = pdfs.find(p => p.id === pdfId);
+            if (!pdf) return;
+            
+            document.getElementById('pdf-name').value = pdf.name;
+            document.getElementById('pdf-link').value = pdf.link;
+            document.getElementById('pdf-category').value = pdf.category || 'education';
+            document.getElementById('pdf-description').value = pdf.description;
+            
+            // Supprimer l'ancien PDF
+            database.ref('pdfs/' + pdfId).remove();
+        }
+
+        // Suppression d'un PDF
+        function deletePdf(pdfId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce PDF?')) {
+                database.ref('pdfs/' + pdfId).remove()
+                    .then(() => {
+                        alert('PDF supprimé avec succès!');
+                    })
+                    .catch((error) => {
+                        alert('Erreur lors de la suppression: ' + error.message);
+                    });
+            }
+        }
+
+        // Affichage des détails d'un PDF
+        function showPdfDetails(pdfId) {
+            const pdf = pdfs.find(p => p.id === pdfId);
+            if (!pdf) return;
+            
+            modalTitle.textContent = pdf.name;
+            modalBody.innerHTML = `
+                <div class="pdf-details">
+                    <p><strong>Catégorie:</strong> ${pdf.category || 'Général'}</p>
+                    <p><strong>Description:</strong> ${pdf.description}</p>
+                    <p><strong>Date d'ajout:</strong> ${formatDate(pdf.dateAdded)}</p>
+                    <p><strong>Lien:</strong> <a href="${pdf.link}" target="_blank">${pdf.link}</a></p>
+                    <div style="margin: 1.5rem 0;">
+                        <button class="btn btn-success download-pdf-modal" data-link="${pdf.link}">
+                            <i class="fas fa-download"></i> Télécharger ce PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="comments-section">
+                    <h4>Commentaires (${pdf.commentCount || 0})</h4>
+                    <div class="comment-form">
+                        <input type="text" id="comment-input" placeholder="Ajouter un commentaire...">
+                        <button id="add-comment" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                    <div id="comment-list" class="comment-list">
+                        <!-- Les commentaires seront affichés ici -->
+                    </div>
+                </div>
+            `;
+            
+            // Événement pour le bouton de téléchargement dans le modal
+            document.querySelector('.download-pdf-modal').addEventListener('click', () => {
+                window.open(pdf.link, '_blank');
+                currentUser.downloads++;
+                localStorage.setItem('pdfUser', JSON.stringify(currentUser));
+            });
+            
+            // Chargement des commentaires
+            loadComments(pdfId);
+            
+            // Événement pour ajouter un commentaire
+            document.getElementById('add-comment').addEventListener('click', () => {
+                const commentText = document.getElementById('comment-input').value;
+                if (commentText.trim() !== '') {
+                    addComment(pdfId, commentText);
+                    document.getElementById('comment-input').value = '';
+                    currentUser.comments++;
+                    localStorage.setItem('pdfUser', JSON.stringify(currentUser));
+                }
+            });
+            
+            pdfModal.style.display = 'flex';
+            currentPdfId = pdfId;
+        }
+
+        // Chargement des commentaires
+        function loadComments(pdfId) {
+            database.ref('comments/' + pdfId).on('value', (snapshot) => {
+                const commentList = document.getElementById('comment-list');
+                commentList.innerHTML = '';
+                
+                if (!snapshot.exists()) {
+                    commentList.innerHTML = '<p style="text-align: center; padding: 1rem; color: #6c757d;">Aucun commentaire pour le moment. Soyez le premier à commenter!</p>';
+                    return;
+                }
+                
+                snapshot.forEach((childSnapshot) => {
+                    const comment = childSnapshot.val();
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'comment';
+                    commentElement.innerHTML = `
+                        <div class="comment-header">
+                            <span class="comment-author">${comment.author || 'Utilisateur anonyme'}</span>
+                            <span class="comment-date">${formatDate(comment.timestamp)}</span>
+                        </div>
+                        <div class="comment-text">${comment.text}</div>
+                        <div class="comment-actions">
+                            <button class="reply-btn" data-comment-id="${childSnapshot.key}">
+                                <i class="fas fa-reply"></i> Répondre
+                            </button>
+                            <button class="like-btn" data-comment-id="${childSnapshot.key}">
+                                <i class="far fa-thumbs-up"></i> J'aime (${comment.likes || 0})
+                            </button>
+                        </div>
+                        <div class="replies" id="replies-${childSnapshot.key}">
+                            <!-- Les réponses seront affichées ici -->
+                        </div>
+                        <div class="reply-form" id="reply-form-${childSnapshot.key}" style="display: none;">
+                            <input type="text" id="reply-input-${childSnapshot.key}" placeholder="Votre réponse...">
+                            <button class="btn btn-primary btn-sm add-reply" data-comment-id="${childSnapshot.key}">Répondre</button>
+                        </div>
+                    `;
+                    commentList.appendChild(commentElement);
+                    
+                    // Charger les réponses pour ce commentaire
+                    loadReplies(pdfId, childSnapshot.key);
+                });
+                
+                // Événements pour les boutons de réponse
+                document.querySelectorAll('.reply-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const commentId = e.target.closest('.reply-btn').getAttribute('data-comment-id');
+                        const replyForm = document.getElementById(`reply-form-${commentId}`);
+                        replyForm.style.display = 'flex';
+                    });
+                });
+                
+                // Événements pour les boutons "J'aime"
+                document.querySelectorAll('.like-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const commentId = e.target.closest('.like-btn').getAttribute('data-comment-id');
+                        likeComment(pdfId, commentId);
+                    });
+                });
+                
+                // Événements pour les boutons de réponse
+                document.querySelectorAll('.add-reply').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const commentId = e.target.closest('.add-reply').getAttribute('data-comment-id');
+                        const replyInput = document.getElementById(`reply-input-${commentId}`);
+                        if (replyInput.value.trim() !== '') {
+                            addReply(pdfId, commentId, replyInput.value);
+                            replyInput.value = '';
+                            document.getElementById(`reply-form-${commentId}`).style.display = 'none';
+                            currentUser.comments++;
+                            localStorage.setItem('pdfUser', JSON.stringify(currentUser));
+                        }
+                    });
+                });
+            });
+        }
+
+        // Chargement des réponses
+        function loadReplies(pdfId, commentId) {
+            database.ref(`replies/${pdfId}/${commentId}`).on('value', (snapshot) => {
+                const repliesContainer = document.getElementById(`replies-${commentId}`);
+                repliesContainer.innerHTML = '';
+                
+                if (!snapshot.exists()) {
+                    return;
+                }
+                
+                snapshot.forEach((childSnapshot) => {
+                    const reply = childSnapshot.val();
+                    const replyElement = document.createElement('div');
+                    replyElement.className = 'comment';
+                    replyElement.style.marginBottom = '10px';
+                    replyElement.innerHTML = `
+                        <div class="comment-header">
+                            <span class="comment-author">${reply.author || 'Utilisateur anonyme'}</span>
+                            <span class="comment-date">${formatDate(reply.timestamp)}</span>
+                        </div>
+                        <div class="comment-text">${reply.text}</div>
+                    `;
+                    repliesContainer.appendChild(replyElement);
+                });
+            });
+        }
+
+        // Ajout d'un commentaire
+        function addComment(pdfId, text) {
+            const commentRef = database.ref('comments/' + pdfId).push();
+            commentRef.set({
+                text: text,
+                author: currentUser.name,
+                timestamp: new Date().toISOString(),
+                likes: 0
+            });
+            
+            // Mettre à jour le compteur de commentaires pour ce PDF
+            const pdfRef = database.ref('pdfs/' + pdfId);
+            pdfRef.once('value').then((snapshot) => {
+                const pdf = snapshot.val();
+                const commentCount = (pdf.commentCount || 0) + 1;
+                pdfRef.update({ commentCount: commentCount });
+            });
+        }
+
+        // Ajout d'une réponse
+        function addReply(pdfId, commentId, text) {
+            const replyRef = database.ref(`replies/${pdfId}/${commentId}`).push();
+            replyRef.set({
+                text: text,
+                author: currentUser.name,
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        // Aimer un commentaire
+        function likeComment(pdfId, commentId) {
+            const commentRef = database.ref(`comments/${pdfId}/${commentId}`);
+            commentRef.once('value').then((snapshot) => {
+                const comment = snapshot.val();
+                const likes = (comment.likes || 0) + 1;
+                commentRef.update({ likes: likes });
+                
+                // Mettre à jour les statistiques utilisateur
+                currentUser.likes++;
+                localStorage.setItem('pdfUser', JSON.stringify(currentUser));
+            });
+        }
+
+        // Fermeture des modals
+        closeModal.forEach(button => {
+            button.addEventListener('click', () => {
+                pdfModal.style.display = 'none';
+                userStatsModal.style.display = 'none';
+            });
+        });
+
+        // Recherche de PDFs
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredPdfs = pdfs.filter(pdf => 
+                pdf.name.toLowerCase().includes(searchTerm) || 
+                pdf.description.toLowerCase().includes(searchTerm) ||
+                (pdf.category && pdf.category.toLowerCase().includes(searchTerm))
+            );
+            
+            pdfGrid.innerHTML = '';
+            
+            if (filteredPdfs.length === 0) {
+                pdfGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">Aucun PDF trouvé.</p>';
+                return;
+            }
+            
+            filteredPdfs.forEach(pdf => {
+                const pdfCard = document.createElement('div');
+                pdfCard.className = 'pdf-card';
+                pdfCard.innerHTML = `
+                    <div class="pdf-card-header">
+                        <h4>${pdf.name}</h4>
+                        <span class="pdf-category">${pdf.category || 'Général'}</span>
+                    </div>
+                    <div class="pdf-card-body">
+                        <p class="pdf-description">${pdf.description}</p>
+                        <div class="pdf-meta">
+                            <small><i class="far fa-calendar"></i> ${formatDate(pdf.dateAdded)}</small>
+                        </div>
+                    </div>
+                    <div class="pdf-card-footer">
+                        <button class="btn btn-primary btn-sm view-pdf" data-id="${pdf.id}">
+                            <i class="fas fa-eye"></i> Détails
+                        </button>
+                        <button class="btn btn-success btn-sm download-pdf" data-link="${pdf.link}">
+                            <i class="fas fa-download"></i> Télécharger
+                        </button>
+                    </div>
+                `;
+                pdfGrid.appendChild(pdfCard);
+            });
+            
+            // Réattacher les événements
+            document.querySelectorAll('.view-pdf').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const pdfId = e.target.closest('.view-pdf').getAttribute('data-id');
+                    showPdfDetails(pdfId);
+                });
+            });
+            
+            document.querySelectorAll('.download-pdf').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const pdfLink = e.target.closest('.download-pdf').getAttribute('data-link');
+                    window.open(pdfLink, '_blank');
+                    currentUser.downloads++;
+                    localStorage.setItem('pdfUser', JSON.stringify(currentUser));
+                });
+            });
+        }
+
+        // Formatage de la date
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('fr-FR', options);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormationPro - Plateforme de Formation</title>
+    <!-- Firebase App (version 8 pour compatibilité) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <!-- Firebase Realtime Database -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --dark-color: #2b2d42;
+            --light-color: #f8f9fa;
+            --gray-color: #adb5bd;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a i {
+            margin-right: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .user-actions button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-actions button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .user-actions button.secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .user-actions button.secondary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 40px 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* Formulaires */
+        .auth-form {
+            max-width: 450px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: var(--gray-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--success-color), #4895ef);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #b5179e);
+        }
+
+        .form-links {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .form-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .form-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Page d'accueil */
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(58, 12, 163, 0.1) 100%);
+            border-radius: var(--border-radius);
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .section-title {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .video-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .video-badge.free {
+            background: var(--success-color);
+        }
+
+        .video-badge.paid {
+            background: var(--accent-color);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-thumbnail::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .video-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .video-description {
+            color: var(--gray-color);
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reaction-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .reaction-buttons button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .reaction-buttons button:hover {
+            transform: scale(1.2);
+        }
+
+        .reaction-buttons .like:hover {
+            color: var(--success-color);
+        }
+
+        .reaction-buttons .dislike:hover {
+            color: var(--danger-color);
+        }
+
+        .download-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .download-btn:hover {
+            background-color: #3aa8d0;
+            transform: translateY(-2px);
+        }
+
+        .comment-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .comment-input {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .comment-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            font-size: 14px;
+        }
+
+        .comment-input button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .comment-input button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .comments-list {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .comment {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .comment-user {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Section payante */
+        .payment-info {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .payment-info h3 {
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+
+        .payment-info p {
+            margin-bottom: 20px;
+            color: var(--gray-color);
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 15px 0;
+        }
+
+        .payment-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .payment-step {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-title i {
+            font-size: 20px;
+        }
+
+        .account-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .warning {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        /* Notifications */
+        .notification {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification.unread {
+            border-left-color: var(--success-color);
+        }
+
+        .notification i {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .notification-date {
+            font-size: 12px;
+            color: var(--gray-color);
+            margin-top: 5px;
+        }
+
+        /* Page admin */
+        .admin-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .admin-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .video-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .video-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .video-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-requests {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .payment-request {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            background-color: #f9f9f9;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-title {
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray-color);
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: var(--gray-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    FormationPro
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#" onclick="showPage('home')"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="#" onclick="showPage('free-courses')"><i class="fas fa-video"></i> Formations Gratuites</a></li>
+                    <li><a href="#" onclick="showPage('paid-courses')"><i class="fas fa-star"></i> Formations Payantes</a></li>
+                    <li><a href="#" onclick="showPage('notifications')"><i class="fas fa-bell"></i> Notifications</a></li>
+                </ul>
+                <div class="user-actions">
+                    <button id="login-btn" onclick="showPage('login')"><i class="fas fa-sign-in-alt"></i> Connexion</button>
+                    <button id="logout-btn" onclick="logout()" style="display: none;"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+                    <button id="admin-btn" onclick="showAdminModal()" style="display: none;" class="secondary"><i class="fas fa-cog"></i> Admin</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Pages -->
+    <div class="container">
+        <!-- Page d'inscription -->
+        <div id="signup-page" class="page">
+            <div class="auth-form">
+                <div class="form-header">
+                    <h2>Créer un compte</h2>
+                    <p>Rejoignez notre communauté d'apprentissage</p>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="Votre email">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Mot de passe</label>
+                    <input type="password" id="signup-password" placeholder="Votre mot de passe">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirmer le mot de passe</label>
+                    <input type="password" id="confirm-password" placeholder="Confirmer votre mot de passe">
+                    <div id="signup-error" class="error-message"></div>
+                </div>
+                <button class="btn" onclick="signup()"><i class="fas fa-user-plus"></i> S'inscrire</button>
+                <div class="form-links">
+                    <a href="#" onclick="showPage('login')">Déjà un compte? Se connecter</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page de connexion -->
+        <div id="login-page" class="page">
+            <div class="auth-form">
+                <div class="form-header">
+                    <h2>Connexion</h2>
+                    <p>Accédez à votre espace personnel</p>
+                </div>
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Votre email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Mot de passe</label>
+                    <input type="password" id="login-password" placeholder="Votre mot de passe">
+                    <div id="login-error" class="error-message"></div>
+                </div>
+                <button class="btn" onclick="login()"><i class="fas fa-sign-in-alt"></i> Se connecter</button>
+                <div class="form-links">
+                    <a href="#" onclick="showPage('forgot-password')">Mot de passe oublié?</a>
+                    <a href="#" onclick="showPage('signup')">S'inscrire</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page mot de passe oublié -->
+        <div id="forgot-password-page" class="page">
+            <div class="auth-form">
+                <div class="form-header">
+                    <h2>Récupération de mot de passe</h2>
+                    <p>Nous vous enverrons un lien de réinitialisation</p>
+                </div>
+                <div class="form-group">
+                    <label for="reset-email">Email</label>
+                    <input type="email" id="reset-email" placeholder="Votre email">
+                </div>
+                <button class="btn" onclick="resetPassword()"><i class="fas fa-paper-plane"></i> Envoyer le lien de réinitialisation</button>
+                <div class="form-links">
+                    <a href="#" onclick="showPage('login')">Retour à la connexion</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page d'accueil -->
+        <div id="home-page" class="page active">
+            <div class="hero">
+                <h1>Formez-vous avec les meilleurs</h1>
+                <p>Découvrez nos formations de qualité pour développer vos compétences et booster votre carrière. Apprenez à votre rythme avec des experts.</p>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-play-circle"></i> Formations Gratuites Récentes</h2>
+            <div class="video-grid" id="home-free-videos">
+                <div class="empty-state">
+                    <i class="fas fa-video-slash"></i>
+                    <h3>Aucune formation gratuite disponible</h3>
+                    <p>Les formations gratuites apparaîtront ici une fois ajoutées par l'administrateur.</p>
+                </div>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-star"></i> Formations Populaires</h2>
+            <div class="video-grid" id="home-popular-videos">
+                <div class="empty-state">
+                    <i class="fas fa-star"></i>
+                    <h3>Aucune formation populaire disponible</h3>
+                    <p>Les formations payantes les plus populaires apparaîtront ici.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section formations gratuites -->
+        <div id="free-courses-page" class="page">
+            <h1 class="section-title"><i class="fas fa-video"></i> Formations Gratuites</h1>
+            <div class="video-grid" id="free-videos-grid">
+                <div class="empty-state">
+                    <i class="fas fa-video-slash"></i>
+                    <h3>Aucune formation gratuite disponible</h3>
+                    <p>Les formations gratuites apparaîtront ici une fois ajoutées par l'administrateur.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section formations payantes -->
+        <div id="paid-courses-page" class="page">
+            <h1 class="section-title"><i class="fas fa-star"></i> Formations Payantes</h1>
+            
+            <div id="payment-info" class="payment-info">
+                <h3>Accédez à toutes nos formations premium</h3>
+                <p>Pour seulement <span class="price-tag">20 000 AR</span>, vous avez accès à toutes nos formations payantes avec un accompagnement personnalisé.</p>
+                <button class="btn btn-secondary" onclick="startPaymentProcess()"><i class="fas fa-arrow-up"></i> Mettre à niveau</button>
+            </div>
+            
+            <div id="payment-process" style="display: none;">
+                <div class="payment-steps">
+                    <div class="payment-step" id="step-1">
+                        <h3 class="step-title"><i class="fas fa-mobile-alt"></i> Étape 1: Numéro de téléphone</h3>
+                        <div class="form-group">
+                            <label for="phone-number">Votre numéro de téléphone</label>
+                            <input type="tel" id="phone-number" placeholder="Votre numéro de téléphone">
+                        </div>
+                        <button class="btn" onclick="nextStep(1)"><i class="fas fa-arrow-right"></i> Suivant</button>
+                    </div>
+                    
+                    <div class="payment-step" id="step-2" style="display: none;">
+                        <h3 class="step-title"><i class="fas fa-user"></i> Étape 2: Informations personnelles</h3>
+                        <div class="form-group">
+                            <label for="full-name">Votre nom complet</label>
+                            <input type="text" id="full-name" placeholder="Votre nom complet">
+                        </div>
+                        <button class="btn" onclick="nextStep(2)"><i class="fas fa-arrow-right"></i> Suivant</button>
+                    </div>
+                    
+                    <div class="payment-step" id="step-3" style="display: none;">
+                        <h3 class="step-title"><i class="fas fa-credit-card"></i> Étape 3: Paiement</h3>
+                        <p>Veuillez effectuer le paiement de <strong>20 000 AR</strong> sur le compte suivant :</p>
+                        
+                        <div class="account-info">
+                            <p><strong>Numéro de compte:</strong> 0323911654</p>
+                            <p><strong>Nom:</strong> RAVELOMANANTSOA URMIN</p>
+                        </div>
+                        
+                        <p class="warning"><i class="fas fa-exclamation-triangle"></i> Veuillez vérifier attentivement le numéro de compte avant d'effectuer le transfert.</p>
+                        
+                        <button class="btn" onclick="confirmPayment()"><i class="fas fa-check"></i> J'ai payé</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="payment-status" style="display: none;">
+                <div class="status-pending">
+                    <h3><i class="fas fa-clock"></i> Paiement en attente de confirmation</h3>
+                    <p>Votre demande de paiement a été enregistrée. Vous recevrez une notification une fois le paiement confirmé par l'administrateur.</p>
+                </div>
+            </div>
+            
+            <div id="paid-courses" style="display: none;">
+                <div class="video-grid" id="paid-videos-grid">
+                    <div class="empty-state">
+                        <i class="fas fa-star"></i>
+                        <h3>Aucune formation payante disponible</h3>
+                        <p>Les formations payantes apparaîtront ici une fois ajoutées par l'administrateur.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section notifications -->
+        <div id="notifications-page" class="page">
+            <h1 class="section-title"><i class="fas fa-bell"></i> Notifications</h1>
+            <div id="notifications-list">
+                <div class="empty-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <h3>Aucune notification</h3>
+                    <p>Vous serez notifié des nouvelles formations et des mises à jour importantes.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page admin -->
+        <div id="admin-page" class="page">
+            <h1><i class="fas fa-cog"></i> Panneau d'Administration</h1>
+            
+            <div class="admin-panel">
+                <div class="admin-section">
+                    <h2><i class="fas fa-video"></i> Gestion des Vidéos</h2>
+                    
+                    <div class="form-group">
+                        <label for="video-title">Titre de la vidéo</label>
+                        <input type="text" id="video-title" placeholder="Titre de la vidéo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-link">Lien de la vidéo</label>
+                        <input type="text" id="video-link" placeholder="Lien de la vidéo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-type">Type de formation</label>
+                        <select id="video-type">
+                            <option value="free">Gratuit</option>
+                            <option value="paid">Payant</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="video-description">Description</label>
+                        <textarea id="video-description" rows="4" placeholder="Description de la vidéo"></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="addVideo()"><i class="fas fa-plus"></i> Ajouter la vidéo</button>
+                    <div id="video-message" class="success-message"></div>
+                    
+                    <h3 style="margin-top: 30px;"><i class="fas fa-list"></i> Vidéos existantes</h3>
+                    <div class="video-list" id="admin-video-list">
+                        <div class="empty-state">
+                            <i class="fas fa-video-slash"></i>
+                            <p>Aucune vidéo ajoutée pour le moment.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h2><i class="fas fa-money-bill-wave"></i> Demandes de Paiement</h2>
+                    <div class="payment-requests" id="payment-requests-list">
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Aucune demande de paiement en attente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation admin -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title"><i class="fas fa-lock"></i> Accès Administrateur</h3>
+            <div class="form-group">
+                <label for="admin-code">Code d'accès</label>
+                <input type="password" id="admin-code" placeholder="Code d'accès administrateur">
+            </div>
+            <div class="modal-actions">
+                <button class="btn" onclick="verifyAdminCode()"><i class="fas fa-check"></i> Valider</button>
+                <button class="btn btn-danger" onclick="closeAdminModal()"><i class="fas fa-times"></i> Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtq50XttR1S-f9RMo0otxx5jrRiY30QEE",
+            authDomain: "miasamada-4f90a.firebaseapp.com",
+            databaseURL: "https://miasamada-4f90a-default-rtdb.firebaseio.com",
+            projectId: "miasamada-4f90a",
+            storageBucket: "miasamada-4f90a.firebasestorage.app",
+            messagingSenderId: "341483369374",
+            appId: "1:341483369374:web:721451eb0df21d4ef45c8f",
+            measurementId: "G-XTH1TCS8H4"
+        };
+
+        // Initialisation de Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Variables globales
+        let currentUser = null;
+        let paymentInProgress = false;
+
+        // Références Firebase
+        const videosRef = database.ref('videos');
+        const paymentsRef = database.ref('payments');
+        const usersRef = database.ref('users');
+        const notificationsRef = database.ref('notifications');
+        const commentsRef = database.ref('comments');
+        const reactionsRef = database.ref('reactions');
+
+        // Fonction pour afficher une page spécifique
+        function showPage(pageId) {
+            // Masquer toutes les pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Afficher la page demandée
+            document.getElementById(`${pageId}-page`).classList.add('active');
+            
+            // Si l'utilisateur est connecté et essaie d'accéder aux pages de connexion/inscription
+            if (currentUser && (pageId === 'login' || pageId === 'signup' || pageId === 'forgot-password')) {
+                showPage('home');
+            }
+            
+            // Charger les données spécifiques à la page
+            if (pageId === 'free-courses' || pageId === 'home') {
+                loadFreeVideos();
+            } else if (pageId === 'paid-courses') {
+                checkPaymentStatus();
+            } else if (pageId === 'notifications') {
+                loadNotifications();
+            }
+        }
+
+        // Fonction d'inscription
+        function signup() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorElement = document.getElementById('signup-error');
+            
+            // Réinitialiser le message d'erreur
+            errorElement.textContent = '';
+            
+            if (!email || !password || !confirmPassword) {
+                errorElement.textContent = 'Veuillez remplir tous les champs.';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                errorElement.textContent = 'Les mots de passe ne correspondent pas.';
+                return;
+            }
+            
+            if (password.length < 6) {
+                errorElement.textContent = 'Le mot de passe doit contenir au moins 6 caractères.';
+                return;
+            }
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    
+                    // Créer un profil utilisateur dans la base de données
+                    return usersRef.child(currentUser.uid).set({
+                        email: email,
+                        createdAt: new Date().toISOString(),
+                        hasPaid: false,
+                        paymentPending: false
+                    });
+                })
+                .then(() => {
+                    updateUI();
+                    showPage('home');
+                    alert('Inscription réussie! Bienvenue sur FormationPro.');
+                })
+                .catch((error) => {
+                    console.error('Erreur d\'inscription:', error);
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorElement.textContent = 'Cet email est déjà utilisé.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorElement.textContent = 'Adresse email invalide.';
+                    } else {
+                        errorElement.textContent = 'Erreur lors de l\'inscription: ' + error.message;
+                    }
+                });
+        }
+
+        // Fonction de connexion
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorElement = document.getElementById('login-error');
+            
+            // Réinitialiser le message d'erreur
+            errorElement.textContent = '';
+            
+            if (!email || !password) {
+                errorElement.textContent = 'Veuillez remplir tous les champs.';
+                return;
+            }
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    updateUI();
+                    showPage('home');
+                })
+                .catch((error) => {
+                    console.error('Erreur de connexion:', error);
+                    if (error.code === 'auth/user-not-found') {
+                        errorElement.textContent = 'Aucun utilisateur trouvé avec cet email.';
+                    } else if (error.code === 'auth/wrong-password') {
+                        errorElement.textContent = 'Mot de passe incorrect.';
+                    } else {
+                        errorElement.textContent = 'Erreur de connexion: ' + error.message;
+                    }
+                });
+        }
+
+        // Fonction de réinitialisation de mot de passe
+        function resetPassword() {
+            const email = document.getElementById('reset-email').value;
+            
+            if (!email) {
+                alert('Veuillez entrer votre adresse email.');
+                return;
+            }
+            
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    alert('Un lien de réinitialisation a été envoyé à votre adresse email.');
+                    showPage('login');
+                })
+                .catch((error) => {
+                    console.error('Erreur de réinitialisation:', error);
+                    alert('Erreur: ' + error.message);
+                });
+        }
+
+        // Fonction de déconnexion
+        function logout() {
+            auth.signOut().then(() => {
+                currentUser = null;
+                updateUI();
+                showPage('login');
+            }).catch((error) => {
+                console.error('Erreur de déconnexion:', error);
+            });
+        }
+
+        // Mise à jour de l'interface utilisateur en fonction de l'état de connexion
+        function updateUI() {
+            const loginBtn = document.getElementById('login-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const adminBtn = document.getElementById('admin-btn');
+            
+            if (currentUser) {
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                adminBtn.style.display = 'block';
+            } else {
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                adminBtn.style.display = 'none';
+            }
+        }
+
+        // Charger les vidéos gratuites depuis Firebase
+        function loadFreeVideos() {
+            videosRef.orderByChild('type').equalTo('free').on('value', (snapshot) => {
+                const freeVideosGrid = document.getElementById('free-videos-grid');
+                const homeFreeVideos = document.getElementById('home-free-videos');
+                const homePopularVideos = document.getElementById('home-popular-videos');
+                
+                // Vider les conteneurs
+                if (freeVideosGrid) freeVideosGrid.innerHTML = '';
+                if (homeFreeVideos) homeFreeVideos.innerHTML = '';
+                if (homePopularVideos) homePopularVideos.innerHTML = '';
+                
+                const videos = snapshot.val();
+                
+                if (!videos || Object.keys(videos).length === 0) {
+                    if (freeVideosGrid) {
+                        freeVideosGrid.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-video-slash"></i>
+                                <h3>Aucune formation gratuite disponible</h3>
+                                <p>Les formations gratuites apparaîtront ici une fois ajoutées par l'administrateur.</p>
+                            </div>
+                        `;
+                    }
+                    if (homeFreeVideos) {
+                        homeFreeVideos.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-video-slash"></i>
+                                <h3>Aucune formation gratuite disponible</h3>
+                                <p>Les formations gratuites apparaîtront ici une fois ajoutées par l'administrateur.</p>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+                
+                // Convertir l'objet en tableau
+                const videoArray = Object.keys(videos).map(key => {
+                    return { id: key, ...videos[key] };
+                });
+                
+                // Ajouter les vidéos gratuites aux sections appropriées
+                videoArray.forEach(video => {
+                    const videoCard = createVideoCard(video);
+                    if (freeVideosGrid) freeVideosGrid.appendChild(videoCard.cloneNode(true));
+                    if (homeFreeVideos) homeFreeVideos.appendChild(videoCard.cloneNode(true));
+                });
+                
+                // Charger également quelques vidéos payantes pour la section populaire
+                videosRef.orderByChild('type').equalTo('paid').limitToFirst(2).once('value', (paidSnapshot) => {
+                    const paidVideos = paidSnapshot.val();
+                    
+                    if (paidVideos && homePopularVideos) {
+                        homePopularVideos.innerHTML = '';
+                        
+                        Object.keys(paidVideos).forEach(key => {
+                            const video = { id: key, ...paidVideos[key] };
+                            const videoCard = createVideoCard(video);
+                            homePopularVideos.appendChild(videoCard);
+                        });
+                    }
+                });
+            });
+        }
+
+        // Créer une carte vidéo
+        function createVideoCard(video) {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.innerHTML = `
+                <div class="video-badge ${video.type}">${video.type === 'free' ? 'Gratuit' : 'Payant'}</div>
+                <div class="video-thumbnail">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">${video.title}</h3>
+                    <p class="video-description">${video.description}</p>
+                    <div class="video-actions">
+                        <div class="reaction-buttons">
+                            <button class="like" onclick="likeVideo('${video.id}')">👍 <span id="likes-${video.id}">0</span></button>
+                            <button class="dislike" onclick="dislikeVideo('${video.id}')">👎 <span id="dislikes-${video.id}">0</span></button>
+                        </div>
+                        <button class="download-btn" onclick="downloadVideo('${video.link}')"><i class="fas fa-download"></i> Télécharger</button>
+                    </div>
+                    <div class="comment-section">
+                        <div class="comment-input">
+                            <input type="text" placeholder="Ajouter un commentaire..." id="comment-input-${video.id}">
+                            <button onclick="addComment('${video.id}')"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                        <div class="comments-list" id="comments-${video.id}">
+                            <!-- Les commentaires seront ajoutés ici dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Charger les réactions pour cette vidéo
+            loadReactions(video.id);
+            
+            // Charger les commentaires pour cette vidéo
+            loadComments(video.id);
+            
+            return card;
+        }
+
+        // Charger les réactions pour une vidéo
+        function loadReactions(videoId) {
+            reactionsRef.child(videoId).on('value', (snapshot) => {
+                const reactions = snapshot.val() || { likes: 0, dislikes: 0 };
+                
+                const likesElement = document.getElementById(`likes-${videoId}`);
+                const dislikesElement = document.getElementById(`dislikes-${videoId}`);
+                
+                if (likesElement) likesElement.textContent = reactions.likes || 0;
+                if (dislikesElement) dislikesElement.textContent = reactions.dislikes || 0;
+            });
+        }
+
+        // Charger les commentaires pour une vidéo
+        function loadComments(videoId) {
+            commentsRef.child(videoId).on('value', (snapshot) => {
+                const commentsContainer = document.getElementById(`comments-${videoId}`);
+                if (!commentsContainer) return;
+                
+                commentsContainer.innerHTML = '';
+                
+                const comments = snapshot.val();
+                
+                if (!comments) {
+                    return;
+                }
+                
+                Object.keys(comments).forEach(key => {
+                    const comment = comments[key];
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'comment';
+                    commentElement.innerHTML = `
+                        <span class="comment-user">${comment.userEmail}:</span>
+                        <span>${comment.text}</span>
+                    `;
+                    commentsContainer.appendChild(commentElement);
+                });
+            });
+        }
+
+        // Vérifier le statut de paiement de l'utilisateur
+        function checkPaymentStatus() {
+            if (!currentUser) {
+                showPage('login');
+                return;
+            }
+            
+            usersRef.child(currentUser.uid).on('value', (snapshot) => {
+                const userData = snapshot.val();
+                
+                if (!userData) return;
+                
+                if (userData.hasPaid) {
+                    document.getElementById('payment-info').style.display = 'none';
+                    document.getElementById('payment-process').style.display = 'none';
+                    document.getElementById('payment-status').style.display = 'none';
+                    document.getElementById('paid-courses').style.display = 'block';
+                    loadPaidVideos();
+                } else {
+                    document.getElementById('payment-info').style.display = 'block';
+                    document.getElementById('payment-process').style.display = 'none';
+                    document.getElementById('payment-status').style.display = 'none';
+                    document.getElementById('paid-courses').style.display = 'none';
+                    
+                    if (userData.paymentPending) {
+                        document.getElementById('payment-info').style.display = 'none';
+                        document.getElementById('payment-status').style.display = 'block';
+                    }
+                }
+            });
+        }
+
+        // Charger les vidéos payantes depuis Firebase
+        function loadPaidVideos() {
+            videosRef.orderByChild('type').equalTo('paid').on('value', (snapshot) => {
+                const paidVideosGrid = document.getElementById('paid-videos-grid');
+                
+                // Vider le conteneur
+                if (paidVideosGrid) paidVideosGrid.innerHTML = '';
+                
+                const videos = snapshot.val();
+                
+                if (!videos || Object.keys(videos).length === 0) {
+                    if (paidVideosGrid) {
+                        paidVideosGrid.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-star"></i>
+                                <h3>Aucune formation payante disponible</h3>
+                                <p>Les formations payantes apparaîtront ici une fois ajoutées par l'administrateur.</p>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+                
+                // Convertir l'objet en tableau
+                const videoArray = Object.keys(videos).map(key => {
+                    return { id: key, ...videos[key] };
+                });
+                
+                // Ajouter les vidéos payantes
+                videoArray.forEach(video => {
+                    const videoCard = createVideoCard(video);
+                    if (paidVideosGrid) paidVideosGrid.appendChild(videoCard);
+                });
+            });
+        }
+
+        // Démarrer le processus de paiement
+        function startPaymentProcess() {
+            if (!currentUser) {
+                showPage('login');
+                return;
+            }
+            
+            document.getElementById('payment-info').style.display = 'none';
+            document.getElementById('payment-process').style.display = 'block';
+            document.getElementById('step-1').style.display = 'block';
+            document.getElementById('step-2').style.display = 'none';
+            document.getElementById('step-3').style.display = 'none';
+            paymentInProgress = true;
+        }
+
+        // Passer à l'étape suivante du paiement
+        function nextStep(step) {
+            if (step === 1) {
+                const phoneNumber = document.getElementById('phone-number').value;
+                if (!phoneNumber) {
+                    alert('Veuillez entrer votre numéro de téléphone.');
+                    return;
+                }
+                
+                document.getElementById('step-1').style.display = 'none';
+                document.getElementById('step-2').style.display = 'block';
+            } else if (step === 2) {
+                const fullName = document.getElementById('full-name').value;
+                if (!fullName) {
+                    alert('Veuillez entrer votre nom complet.');
+                    return;
+                }
+                
+                document.getElementById('step-2').style.display = 'none';
+                document.getElementById('step-3').style.display = 'block';
+            }
+        }
+
+        // Confirmer le paiement
+        function confirmPayment() {
+            if (!currentUser) {
+                showPage('login');
+                return;
+            }
+            
+            const phoneNumber = document.getElementById('phone-number').value;
+            const fullName = document.getElementById('full-name').value;
+            
+            // Enregistrer la demande de paiement dans Firebase
+            const paymentData = {
+                userId: currentUser.uid,
+                userEmail: currentUser.email,
+                phoneNumber: phoneNumber,
+                fullName: fullName,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+            
+            const newPaymentRef = paymentsRef.push();
+            newPaymentRef.set(paymentData)
+                .then(() => {
+                    // Mettre à jour le statut de l'utilisateur
+                    return usersRef.child(currentUser.uid).update({
+                        paymentPending: true
+                    });
+                })
+                .then(() => {
+                    // Afficher un message de confirmation
+                    alert('Votre demande de paiement a été enregistrée. Vous recevrez une notification une fois le paiement confirmé.');
+                    
+                    // Réinitialiser le processus
+                    document.getElementById('payment-process').style.display = 'none';
+                    document.getElementById('payment-status').style.display = 'block';
+                    paymentInProgress = false;
+                    
+                    // Réinitialiser les champs
+                    document.getElementById('phone-number').value = '';
+                    document.getElementById('full-name').value = '';
+                    
+                    // Ajouter une notification
+                    addNotification(currentUser.uid, 'Votre demande de paiement est en attente de confirmation.', 'payment');
+                })
+                .catch((error) => {
+                    console.error('Erreur lors de l\'enregistrement du paiement:', error);
+                    alert('Une erreur s\'est produite. Veuillez réessayer.');
+                });
+        }
+
+        // Charger les notifications depuis Firebase
+        function loadNotifications() {
+            if (!currentUser) return;
+            
+            const notificationsList = document.getElementById('notifications-list');
+            if (!notificationsList) return;
+            
+            notificationsList.innerHTML = '';
+            
+            notificationsRef.orderByChild('userId').equalTo(currentUser.uid).on('value', (snapshot) => {
+                const notifications = snapshot.val();
+                
+                if (!notifications || Object.keys(notifications).length === 0) {
+                    notificationsList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-bell-slash"></i>
+                            <h3>Aucune notification</h3>
+                            <p>Vous serez notifié des nouvelles formations et des mises à jour importantes.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Convertir l'objet en tableau et trier par date
+                const notificationArray = Object.keys(notifications).map(key => {
+                    return { id: key, ...notifications[key] };
+                });
+                
+                notificationArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                // Afficher les notifications
+                notificationArray.forEach(notification => {
+                    const notificationElement = document.createElement('div');
+                    notificationElement.className = `notification ${notification.read ? '' : 'unread'}`;
+                    notificationElement.innerHTML = `
+                        <i class="fas fa-bell"></i>
+                        <div class="notification-content">
+                            <div class="notification-title">${notification.title || 'Notification'}</div>
+                            <p>${notification.message}</p>
+                            <div class="notification-date">${new Date(notification.timestamp).toLocaleDateString('fr-FR')}</div>
+                        </div>
+                    `;
+                    notificationsList.appendChild(notificationElement);
+                    
+                    // Marquer comme lu après affichage
+                    if (!notification.read) {
+                        notificationsRef.child(notification.id).update({ read: true });
+                    }
+                });
+            });
+        }
+
+        // Ajouter une notification
+        function addNotification(userId, message, type) {
+            // Déterminer le titre en fonction du type
+            let title = 'Notification';
+            if (type === 'payment') title = 'Paiement';
+            else if (type === 'video') title = 'Nouvelle vidéo';
+            else if (type === 'system') title = 'Système';
+            
+            // Ajouter la notification dans Firebase
+            notificationsRef.push({
+                userId: userId,
+                title: title,
+                message: message,
+                type: type,
+                timestamp: new Date().toISOString(),
+                read: false
+            });
+        }
+
+        // Fonctions pour les interactions avec les vidéos
+        function likeVideo(videoId) {
+            if (!currentUser) {
+                alert('Veuillez vous connecter pour réagir aux vidéos.');
+                return;
+            }
+            
+            reactionsRef.child(videoId).transaction((currentReactions) => {
+                if (currentReactions) {
+                    currentReactions.likes = (currentReactions.likes || 0) + 1;
+                } else {
+                    currentReactions = { likes: 1, dislikes: 0 };
+                }
+                return currentReactions;
+            });
+        }
+
+        function dislikeVideo(videoId) {
+            if (!currentUser) {
+                alert('Veuillez vous connecter pour réagir aux vidéos.');
+                return;
+            }
+            
+            reactionsRef.child(videoId).transaction((currentReactions) => {
+                if (currentReactions) {
+                    currentReactions.dislikes = (currentReactions.dislikes || 0) + 1;
+                } else {
+                    currentReactions = { likes: 0, dislikes: 1 };
+                }
+                return currentReactions;
+            });
+        }
+
+        function downloadVideo(link) {
+            // Simuler le téléchargement
+            alert(`Téléchargement de la vidéo: ${link}`);
+            // Dans une vraie application, on téléchargerait la vidéo
+        }
+
+        function addComment(videoId) {
+            if (!currentUser) {
+                alert('Veuillez vous connecter pour commenter.');
+                return;
+            }
+            
+            const commentInput = document.getElementById(`comment-input-${videoId}`);
+            const comment = commentInput.value;
+            
+            if (!comment) {
+                alert('Veuillez entrer un commentaire.');
+                return;
+            }
+            
+            // Ajouter le commentaire dans Firebase
+            commentsRef.child(videoId).push({
+                userId: currentUser.uid,
+                userEmail: currentUser.email,
+                text: comment,
+                timestamp: new Date().toISOString()
+            })
+            .then(() => {
+                commentInput.value = '';
+            })
+            .catch((error) => {
+                console.error('Erreur lors de l\'ajout du commentaire:', error);
+                alert('Une erreur s\'est produite. Veuillez réessayer.');
+            });
+        }
+
+        // Fonctions pour l'administration
+        function showAdminModal() {
+            document.getElementById('admin-modal').style.display = 'flex';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').style.display = 'none';
+        }
+
+        function verifyAdminCode() {
+            const adminCode = document.getElementById('admin-code').value;
+            
+            if (adminCode === '080600') {
+                document.getElementById('admin-modal').style.display = 'none';
+                showPage('admin');
+                loadAdminData();
+            } else {
+                alert('Code d\'accès incorrect.');
+            }
+        }
+
+        function loadAdminData() {
+            // Charger les vidéos existantes
+            loadAdminVideos();
+            
+            // Charger les demandes de paiement
+            loadPaymentRequests();
+        }
+
+        function loadAdminVideos() {
+            const videoList = document.getElementById('admin-video-list');
+            if (!videoList) return;
+            
+            videosRef.on('value', (snapshot) => {
+                videoList.innerHTML = '';
+                
+                const videos = snapshot.val();
+                
+                if (!videos || Object.keys(videos).length === 0) {
+                    videoList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-video-slash"></i>
+                            <p>Aucune vidéo ajoutée pour le moment.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Convertir l'objet en tableau
+                const videoArray = Object.keys(videos).map(key => {
+                    return { id: key, ...videos[key] };
+                });
+                
+                // Trier par date (les plus récentes en premier)
+                videoArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                // Afficher les vidéos
+                videoArray.forEach(video => {
+                    const videoItem = document.createElement('div');
+                    videoItem.className = 'video-item';
+                    videoItem.innerHTML = `
+                        <div>
+                            <strong>${video.title}</strong> (${video.type === 'free' ? 'Gratuit' : 'Payant'})
+                            <p>${video.description}</p>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteVideo('${video.id}')"><i class="fas fa-trash"></i> Supprimer</button>
+                    `;
+                    videoList.appendChild(videoItem);
+                });
+            });
+        }
+
+        function loadPaymentRequests() {
+            const requestsList = document.getElementById('payment-requests-list');
+            if (!requestsList) return;
+            
+            paymentsRef.orderByChild('status').equalTo('pending').on('value', (snapshot) => {
+                requestsList.innerHTML = '';
+                
+                const requests = snapshot.val();
+                
+                if (!requests || Object.keys(requests).length === 0) {
+                    requestsList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Aucune demande de paiement en attente.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Convertir l'objet en tableau
+                const requestArray = Object.keys(requests).map(key => {
+                    return { id: key, ...requests[key] };
+                });
+                
+                // Afficher les demandes
+                requestArray.forEach(request => {
+                    const requestElement = document.createElement('div');
+                    requestElement.className = 'payment-request';
+                    requestElement.innerHTML = `
+                        <p><strong>Utilisateur:</strong> ${request.userEmail}</p>
+                        <p><strong>Nom:</strong> ${request.fullName}</p>
+                        <p><strong>Téléphone:</strong> ${request.phoneNumber}</p>
+                        <p><strong>Date:</strong> ${new Date(request.timestamp).toLocaleDateString('fr-FR')}</p>
+                        <p><strong>Statut:</strong> En attente</p>
+                        <div class="request-actions">
+                            <button class="btn btn-secondary" onclick="confirmPaymentRequest('${request.id}', '${request.userId}')"><i class="fas fa-check"></i> Confirmer</button>
+                            <button class="btn btn-danger" onclick="rejectPaymentRequest('${request.id}', '${request.userId}')"><i class="fas fa-times"></i> Refuser</button>
+                        </div>
+                    `;
+                    requestsList.appendChild(requestElement);
+                });
+            });
+        }
+
+        function addVideo() {
+            const title = document.getElementById('video-title').value;
+            const link = document.getElementById('video-link').value;
+            const type = document.getElementById('video-type').value;
+            const description = document.getElementById('video-description').value;
+            const messageElement = document.getElementById('video-message');
+            
+            if (!title || !link || !description) {
+                alert('Veuillez remplir tous les champs.');
+                return;
+            }
+            
+            // Ajouter la vidéo dans Firebase
+            videosRef.push({
+                title: title,
+                link: link,
+                type: type,
+                description: description,
+                timestamp: new Date().toISOString()
+            })
+            .then(() => {
+                // Réinitialiser le formulaire
+                document.getElementById('video-title').value = '';
+                document.getElementById('video-link').value = '';
+                document.getElementById('video-description').value = '';
+                
+                // Afficher un message de confirmation
+                messageElement.innerHTML = '<i class="fas fa-check"></i> Vidéo ajoutée avec succès!';
+                setTimeout(() => {
+                    messageElement.innerHTML = '';
+                }, 3000);
+                
+                // Ajouter une notification pour tous les utilisateurs
+                usersRef.once('value', (snapshot) => {
+                    const users = snapshot.val();
+                    if (users) {
+                        Object.keys(users).forEach(userId => {
+                            addNotification(userId, `Une nouvelle formation "${title}" a été ajoutée dans la section ${type === 'free' ? 'gratuite' : 'payante'}.`, 'video');
+                        });
+                    }
+                });
+            })
+            .catch((error) => {
+                console.error('Erreur lors de l\'ajout de la vidéo:', error);
+                alert('Une erreur s\'est produite. Veuillez réessayer.');
+            });
+        }
+
+        function deleteVideo(videoId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette vidéo?')) {
+                videosRef.child(videoId).remove()
+                    .then(() => {
+                        // Supprimer également les réactions et commentaires associés
+                        reactionsRef.child(videoId).remove();
+                        commentsRef.child(videoId).remove();
+                    })
+                    .catch((error) => {
+                        console.error('Erreur lors de la suppression de la vidéo:', error);
+                        alert('Une erreur s\'est produite. Veuillez réessayer.');
+                    });
+            }
+        }
+
+        function confirmPaymentRequest(requestId, userId) {
+            // Mettre à jour le statut de la demande de paiement
+            paymentsRef.child(requestId).update({ status: 'confirmed' })
+                .then(() => {
+                    // Mettre à jour le statut de l'utilisateur
+                    return usersRef.child(userId).update({
+                        hasPaid: true,
+                        paymentPending: false
+                    });
+                })
+                .then(() => {
+                    // Ajouter une notification pour l'utilisateur
+                    addNotification(userId, 'Votre paiement a été confirmé. Vous avez maintenant accès à toutes les formations payantes.', 'payment');
+                    
+                    alert('Paiement confirmé avec succès!');
+                })
+                .catch((error) => {
+                    console.error('Erreur lors de la confirmation du paiement:', error);
+                    alert('Une erreur s\'est produite. Veuillez réessayer.');
+                });
+        }
+
+        function rejectPaymentRequest(requestId, userId) {
+            // Mettre à jour le statut de la demande de paiement
+            paymentsRef.child(requestId).update({ status: 'rejected' })
+                .then(() => {
+                    // Mettre à jour le statut de l'utilisateur
+                    return usersRef.child(userId).update({
+                        paymentPending: false
+                    });
+                })
+                .then(() => {
+                    // Ajouter une notification pour l'utilisateur
+                    addNotification(userId, 'Votre paiement a été refusé. Veuillez vérifier les informations et réessayer.', 'payment');
+                    
+                    alert('Paiement rejeté!');
+                })
+                .catch((error) => {
+                    console.error('Erreur lors du rejet du paiement:', error);
+                    alert('Une erreur s\'est produite. Veuillez réessayer.');
+                });
+        }
+
+        // Écouteur pour les changements d'état d'authentification
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            updateUI();
+            
+            if (user) {
+                showPage('home');
+            } else {
+                showPage('login');
+            }
+        });
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+        });
+    </script>
+</body>
+</html>

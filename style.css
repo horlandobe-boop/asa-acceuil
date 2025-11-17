@@ -1,0 +1,162 @@
+:root {
+  --bg: #0f1724;
+  --accent: #0ea5e9;
+  --muted: #9aa6b2;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(180deg, #071027, #0f1724);
+  color: #e6eef6;
+  height: 100%;
+}
+
+.phone {
+  width: 360px;
+  max-width: 92vw;
+  height: 720px;
+  margin: 20px auto;
+  padding: 16px;
+  border-radius: 36px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Carousel */
+.carousel-container {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.carousel-image {
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.carousel-image.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+/* Grid des apps */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.app {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  padding: 14px 0;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #e6eef6;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.app:hover {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.4);
+}
+
+.icon {
+  font-size: 32px;
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05);
+}
+
+.label {
+  font-size: 12px;
+  color: var(--muted);
+  word-break: break-word;
+  max-width: 70px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.back {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.page {
+  padding: 12px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 380px) {
+  .phone { height: auto; }
+  .icon { width: 50px; height: 50px; font-size: 28px; }
+  .label { max-width: 60px; font-size: 11px; }
+}address
+
+
+.titre-centrer {
+  text-align: center;           /* Centre horizontal ny texte */
+  color: #0ea5e9;               /* Manga tsara (accent blue) */
+  font-size: 24px;               /* Habe mety ho an’ny titre */
+  font-weight: 600;              /* Bold kely */
+  border: 2px solid #0ea5e9;    /* Bordure manga manodidina */
+  border-radius: 12px;           /* Corners boribory kely */
+  padding: 10px 20px;            /* Espace anatiny tsara */
+  display: inline-block;          /* Mba tsy ho fill ny width rehetra */
+  background: rgba(14, 165, 233, 0.1); /* Background manga somary mangarahara */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Shadow kely ho elegante */
+  margin: 15px auto;             /* Eo afovoan’ny container */
+}

@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="mg">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Asa En Live — Asa En Ligne</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #64748b;
+      --accent: #f1f5f9;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 12px;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    /* Navigation */
+    .back-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    /* Settings in Header */
+    .header-settings {
+      position: relative;
+      display: inline-block;
+    }
+
+    .settings-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 8px;
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      font-size: 1.25rem;
+    }
+
+    .settings-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .settings-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      min-width: 280px;
+      margin-top: 0.5rem;
+      padding: 0.5rem 0;
+      z-index: 101;
+      display: none;
+      border: 1px solid var(--border);
+    }
+
+    .settings-dropdown.active {
+      display: block;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .dropdown-item {
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      text-decoration: none;
+      display: block;
+      transition: var(--transition);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background: var(--accent);
+      color: var(--primary);
+    }
+
+    .dropdown-section {
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--accent);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Container & Cards */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.25rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Video Section */
+    .video-section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .video-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .player {
+      width: 100%;
+      background: #000;
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .player iframe, 
+    .player video {
+      width: 100%;
+      height: 520px;
+      border: 0;
+      display: block;
+    }
+
+    .player-placeholder {
+      padding: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+      background: var(--accent);
+      border-radius: var(--radius);
+    }
+
+    /* Reactions */
+    .reactions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .react-btn {
+      background: var(--accent);
+      border-radius: 999px;
+      padding: 0.75rem 1.25rem;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+
+    .react-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .video-meta {
+      margin-left: auto;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Comments */
+    .comments-section {
+      margin-top: 1.5rem;
+    }
+
+    .comments-section h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .comment-input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.875rem;
+      transition: var(--transition);
+      resize: vertical;
+      min-height: 44px;
+    }
+
+    .comment-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .post-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .post-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .comment {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .comment:last-child {
+      border-bottom: none;
+    }
+
+    .comment-meta {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .comment strong {
+      color: var(--text);
+    }
+
+    /* Accordion */
+    .accordion {
+      width: 100%;
+    }
+
+    .accordion-btn {
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.25rem;
+      border: none;
+      background: var(--accent);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .accordion-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .accordion-btn::after {
+      content: "▼";
+      font-size: 0.75rem;
+      transition: var(--transition);
+    }
+
+    .accordion-btn.active::after {
+      transform: rotate(180deg);
+    }
+
+    .accordion-panel {
+      padding: 1.25rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: none;
+    }
+
+    .accordion-panel:last-child {
+      border-bottom: none;
+    }
+
+    .accordion-panel.active {
+      display: block;
+    }
+
+    .accordion-panel ul {
+      padding-left: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .accordion-panel li {
+      margin-bottom: 0.5rem;
+    }
+
+    .accordion-panel h4 {
+      margin: 1rem 0 0.5rem 0;
+      color: var(--text);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        margin: 1rem auto;
+        padding: 0 1rem;
+      }
+      
+      .card {
+        padding: 1.25rem;
+      }
+      
+      .player iframe, 
+      .player video {
+        height: 300px;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .comment-form {
+        flex-direction: column;
+      }
+      
+      .post-btn {
+        width: 100%;
+      }
+      
+      .reactions {
+        justify-content: space-between;
+      }
+      
+      .video-meta {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+        margin-top: 0.5rem;
+      }
+
+      .settings-dropdown {
+        right: -50px;
+        min-width: 250px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .player iframe, 
+      .player video {
+        height: 200px;
+      }
+      
+      header h1 {
+        font-size: 1.25rem;
+      }
+      
+      .react-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+      }
+
+      .settings-dropdown {
+        right: -80px;
+        min-width: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>Asa En Live — Asa En Ligne</h1>
+      <nav style="display: flex; align-items: center; gap: 1rem;">
+        <a href="index.html" class="back">← Retour</a>
+        <div class="header-settings">
+          <button class="settings-btn" id="openSettings" title="Paramètres">
+            ⚙️
+          </button>
+          <div class="settings-dropdown" id="settingsDropdown">
+            <div class="dropdown-section">Information</div>
+            <a class="dropdown-item" href="#" data-target="infoPanel">Information du plateforme</a>
+            <a class="dropdown-item" href="#" data-target="faqPanel">FAQ</a>
+            <div class="dropdown-section">Compte</div>
+            <a class="dropdown-item" href="index.html" id="logoutBtn">Se déconnecter</a>
+            <a href="index.html" class="back">← Retour</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card video-section" id="liveSection">
+      <h2 id="liveTitle">Video Live</h2>
+      <div class="video-wrap">
+        <div class="player" id="playerContainer">
+          <div class="player-placeholder">
+            Tsy mbola misy vidéo nalefa — mba miandrasa na mifidiana vidéo amin'ny admin.
+          </div>
+        </div>
+
+        <div class="reactions" id="reactionsBar" style="display:none">
+          <button class="react-btn" data-type="like">
+            👍 <span id="likeCount">0</span>
+          </button>
+          <button class="react-btn" data-type="love">
+            ❤️ <span id="loveCount">0</span>
+          </button>
+          <button class="react-btn" data-type="clap">
+            👏 <span id="clapCount">0</span>
+          </button>
+          <div class="video-meta">
+            Zavatra: <span id="videoDescShort"></span>
+          </div>
+        </div>
+
+        <div class="comments-section card" id="commentsArea" style="display:none">
+          <h3>Comments</h3>
+          <div class="comment-form">
+            <input type="text" id="commentName" class="comment-input" placeholder="Anarana (azo atao tsy asiana)">
+            <textarea id="commentText" class="comment-input" placeholder="Soraty eto ny hevitrao..." rows="2"></textarea>
+            <button id="postComment" class="post-btn">Send</button>
+          </div>
+          <div id="commentsList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card accordion">
+      <button type="button" class="accordion-btn" data-acc="#infoPanel">
+        1. Information du plateforme
+      </button>
+      <div id="infoPanel" class="accordion-panel">
+        <p>
+          Ity sehatra "Asa En Live" ity dia natao ho an'ny fampisehoana mivantana amin'ny alalan'ny vidéo sy ny fizarana fampahalalana momba ny asa :
+        </p>
+        <ul>
+          <li>Ny admin (mpikarakara) no mampiditra vidéo na mampiditra lien vidéo ao amin'ny adminlive.html.</li>
+          <li>Ny mpitsidika afaka mijery ny vidéo ary manoratra commentaire eo ambany sy mamaly ireo commentaire hafa.</li>
+          <li>Reactions (like, love, clap) azo ampiasaina hisolo hevitra fanehoan-kevitra haingana.</li>
+          <li>Ny vidéo azo atao avy amin'ny link (Youtube/Embed) na avy amin'ny Firebase Storage rehefa ampidirin'ny admin.</li>
+          <li>Ny rafitra commentaire sy réactions dia voatahiry ao amin'ny Firebase Realtime Database (na Firestore raha tianao ovaina).</li>
+          <li>Ho an'ny fanovana / famafana vidéo dia afaka miditra amin'ny pejin'ny admin (adminlive.html) ny admin.</li>
+        </ul>
+      </div>
+
+      <button type="button" class="accordion-btn" data-acc="#faqPanel">
+        2. FAQ
+      </button>
+      <div id="faqPanel" class="accordion-panel">
+        <h4>Ahoana no fomba handefasana vidéo?</h4>
+        <p>Ny admin ihany no afaka mandefa video amin'ny alalan'ny pejy adminlive.html: misafidy titre, lien na mampakatra vidéo avy ao amin'ny storage, manome fanazavana, ary manindry "Ajouter".</p>
+
+        <h4>Afaka mametraka commentaire ve ny mpampiasa tsy misy kaonty?</h4>
+        <p>Eny, azo ekena ny commentaire tsotra; raha mila rafitra miavaka kokoa dia azo ampiana authentication (Firebase Auth) amin'ny ho avy.</p>
+
+        <h4>Inona no atao raha te-hamafa vidéo?</h4>
+        <p>Ny admin dia afaka mamafa ny vidéo ao amin'ny adminlive.html amin'ny bokotra "Supprimer"; io dia hanala azy eo amin'ny pejy fandraisana (live).</p>
+      </div>
+
+      <button type="button" class="accordion-btn" data-acc="#contactPanel">
+        3. Retour à la page d'accueil
+      </button>
+      <div id="contactPanel" class="accordion-panel">
+        <p>Tongava miverina ao amin'ny <a href="/index.html" style="color: var(--primary); text-decoration: none; font-weight: 500;">pejy voalohany</a> raha te-hijery ny tolotra hafa.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    // Firebase config (tsy ovaina, avy amin'ny anao)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBtq50XttR1S-f9RMo0otxx5jrRiY30QEE",
+      authDomain: "miasamada-4f90a.firebaseapp.com",
+      databaseURL: "https://miasamada-4f90a-default-rtdb.firebaseio.com",
+      projectId: "miasamada-4f90a",
+      storageBucket: "miasamada-4f90a.firebasestorage.app",
+      messagingSenderId: "341483369374",
+      appId: "1:341483369374:web:721451eb0df21d4ef45c8f",
+      measurementId: "G-XTH1TCS8H4"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Helpers
+    function isYouTubeLink(url){return /youtube\.com|youtu\.be/.test(url)}
+
+    // Load latest live video (adminlive.html should push under /liveVideos with key and fields: title, link, description, timestamp, reactions{like:0,...})
+    function loadLatestVideo(){
+      const ref = db.ref('liveVideos').orderByChild('timestamp').limitToLast(1);
+      ref.on('value', snap=>{
+        const data = snap.val();
+        if(!data){
+          document.getElementById('playerContainer').innerHTML = '<div class="player-placeholder">Tsy mbola misy vidéo nalefa.</div>';
+          document.getElementById('commentsArea').style.display='none';
+          document.getElementById('reactionsBar').style.display='none';
+          return;
+        }
+        const keys = Object.keys(data);
+        const key = keys[0];
+        const video = data[key];
+        renderVideo(key, video);
+      });
+    }
+
+    function renderVideo(id, video){
+      const container = document.getElementById('playerContainer');
+      container.innerHTML = '';
+      // create player depending on link
+      if(video.link && isYouTubeLink(video.link)){
+        // convert to embed
+        let vid = video.link;
+        if(vid.includes('watch?v=')) vid = vid.split('watch?v=')[1].split('&')[0];
+        if(vid.includes('youtu.be/')) vid = vid.split('youtu.be/')[1].split('?')[0];
+        const iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube.com/embed/'+vid+'?rel=0';
+        iframe.setAttribute('allow','accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+        iframe.setAttribute('allowfullscreen','');
+        container.appendChild(iframe);
+      } else if(video.link){
+        // assume direct .mp4 link
+        const vidEl = document.createElement('video');
+        vidEl.controls = true;
+        const src = document.createElement('source');
+        src.src = video.link;
+        src.type = 'video/mp4';
+        vidEl.appendChild(src);
+        container.appendChild(vidEl);
+      } else if(video.storageURL){
+        const vidEl = document.createElement('video');
+        vidEl.controls = true;
+        const src = document.createElement('source');
+        src.src = video.storageURL;
+        src.type = 'video/mp4';
+        vidEl.appendChild(src);
+        container.appendChild(vidEl);
+      } else {
+        container.innerHTML = '<div class="player-placeholder">Tsy afaka milalao ity vidéo ity (tsy misy link na storageURL).</div>';
+      }
+
+      document.getElementById('liveTitle').textContent = video.title || 'Video Live';
+      document.getElementById('videoDescShort').textContent = (video.description||'') .slice(0,80);
+      document.getElementById('reactionsBar').style.display='flex';
+      document.getElementById('commentsArea').style.display='block';
+
+      // setup reaction counts
+      const r = video.reactions || {like:0,love:0,clap:0};
+      document.getElementById('likeCount').textContent = r.like||0;
+      document.getElementById('loveCount').textContent = r.love||0;
+      document.getElementById('clapCount').textContent = r.clap||0;
+
+      // load comments
+      listenComments(id);
+
+      // set handlers
+      document.querySelectorAll('.react-btn').forEach(btn=>{
+        btn.onclick = ()=>{
+          const type = btn.getAttribute('data-type');
+          addReaction(id, type);
+        }
+      });
+
+      // post comment
+      document.getElementById('postComment').onclick = ()=>{
+        const name = document.getElementById('commentName').value || 'Anonyme';
+        const text = document.getElementById('commentText').value.trim();
+        if(!text) return alert('Ampidiro ny commentaire azafady.');
+        postComment(id, {name,text,timestamp:Date.now()});
+        document.getElementById('commentText').value='';
+      }
+    }
+
+    // Reactions updater (increment atomically)
+    function addReaction(videoId, type){
+      const rRef = db.ref('liveVideos/'+videoId+'/reactions/'+type);
+      rRef.transaction(current=> (current||0)+1);
+    }
+
+    // Comments
+    function listenComments(videoId){
+      const cRef = db.ref('comments/'+videoId).orderByChild('timestamp');
+      cRef.on('value', snap=>{
+        const list = snap.val() || {};
+        const out = document.getElementById('commentsList');
+        out.innerHTML='';
+        const keys = Object.keys(list);
+        keys.forEach(k=>{
+          const c = list[k];
+          const div = document.createElement('div');
+          div.className='comment';
+          div.innerHTML = `
+            <div class='comment-meta'>
+              <strong>${escapeHtml(c.name||'Anonyme')}</strong>
+              <span>${new Date(c.timestamp).toLocaleString()}</span>
+            </div>
+            <div>${escapeHtml(c.text)}</div>
+          `;
+          out.prepend(div);
+        });
+      });
+    }
+
+    function postComment(videoId, comment){
+      const cRef = db.ref('comments/'+videoId).push();
+      cRef.set(comment);
+    }
+
+    // small utils
+    function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+    // Start
+    loadLatestVideo();
+
+    // Settings dropdown functionality
+    const settingsBtn = document.getElementById('openSettings');
+    const settingsDropdown = document.getElementById('settingsDropdown');
+
+    settingsBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      settingsDropdown.classList.toggle('active');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+      settingsDropdown.classList.remove('active');
+    });
+
+    // Prevent dropdown from closing when clicking inside it
+    settingsDropdown.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    // Dropdown item click handlers
+    document.querySelectorAll('.dropdown-item[data-target]').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('data-target');
+        
+        // Close all accordion panels
+        document.querySelectorAll('.accordion-panel').forEach(panel => {
+          panel.classList.remove('active');
+        });
+        
+        // Remove active class from all accordion buttons
+        document.querySelectorAll('.accordion-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        // Open the target accordion panel
+        const targetPanel = document.getElementById(targetId);
+        if (targetPanel) {
+          targetPanel.classList.add('active');
+          const correspondingBtn = document.querySelector(`[data-acc="#${targetId}"]`);
+          if (correspondingBtn) {
+            correspondingBtn.classList.add('active');
+          }
+          
+          // Scroll to the accordion section
+          targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Close the dropdown
+        settingsDropdown.classList.remove('active');
+      });
+    });
+
+    // Logout button handler
+    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (confirm('Tena te-hiala ve ianao?')) {
+        alert('Famaritana: Mbola tsy misy rafitra authentication ampidirina. Ataovy antoka fa manala ny cache/mijery pejy hafa ianao.');
+        // Here you would typically add logout logic when authentication is implemented
+      }
+      settingsDropdown.classList.remove('active');
+    });
+
+    // Accordion behavior
+    document.querySelectorAll('.accordion-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const sel = btn.getAttribute('data-acc');
+        const panel = document.querySelector(sel);
+        
+        // Toggle current panel
+        const isActive = panel.classList.contains('active');
+        document.querySelectorAll('.accordion-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.accordion-btn').forEach(b => b.classList.remove('active'));
+        
+        if (!isActive) {
+          panel.classList.add('active');
+          btn.classList.add('active');
+        }
+      });
+    });
+
+    // Listen for changes to the latest video's reactions and update counts live
+    const latestReactionsRef = db.ref('liveVideos');
+    latestReactionsRef.on('child_changed', snap=>{
+      // if reactions changed, reload
+      const video = snap.val();
+      // try to update counts if visible
+      if(video && video.reactions){
+        document.getElementById('likeCount').textContent = video.reactions.like||0;
+        document.getElementById('loveCount').textContent = video.reactions.love||0;
+        document.getElementById('clapCount').textContent = video.reactions.clap||0;
+      }
+    });
+
+  </script>
+</body>
+</html>

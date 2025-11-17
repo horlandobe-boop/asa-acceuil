@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscription & Connexion</title>
+<script type="module">
+  // Import Firebase modules (v9+)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBtq50XttR1S-f9RMo0otxx5jrRiY30QEE",
+    authDomain: "miasamada-4f90a.firebaseapp.com",
+    databaseURL: "https://miasamada-4f90a-default-rtdb.firebaseio.com",
+    projectId: "miasamada-4f90a",
+    storageBucket: "miasamada-4f90a.firebasestorage.app",
+    messagingSenderId: "341483369374",
+    appId: "1:341483369374:web:721451eb0df21d4ef45c8f",
+    measurementId: "G-XTH1TCS8H4"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // Buttons
+  const signupBtn = document.getElementById('signup-btn');
+  const loginBtn = document.getElementById('login-btn');
+  const goLogin = document.getElementById('go-login');
+  const googleSignup = document.getElementById('google-signup');
+  const googleLogin = document.getElementById('google-login');
+
+  // Navigation signup/login
+  goLogin.addEventListener('click', ()=> {
+    document.getElementById('signup-form').style.display = 'none';
+    document.getElementById('login-form').style.display = 'block';
+  });
+
+  // Signup
+  signupBtn.addEventListener('click', ()=>{
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const phone = document.getElementById('phone').value;
+
+    if(!username || !email || !password || !phone){
+      alert('Veuillez remplir tous les champs');
+      return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential)=>{
+      const user = userCredential.user;
+      set(ref(db, 'users/' + user.uid), {
+        username,
+        email,
+        phone
+      });
+      alert('Inscription réussie ! Redirection...');
+      window.location.href = 'home.html';
+    })
+    .catch(err=>alert(err.message));
+  });
+
+  // Login
+  loginBtn.addEventListener('click', ()=>{
+    const identifier = document.getElementById('login-identifier').value;
+    const password = document.getElementById('login-password').value;
+    if(!identifier || !password){ alert('Veuillez remplir tous les champs'); return; }
+
+    signInWithEmailAndPassword(auth, identifier, password)
+      .then(()=> window.location.href = 'home.html')
+      .catch(err=>alert(err.message));
+  });
+
+  // Google signup/login
+  const provider = new GoogleAuthProvider();
+  googleSignup.addEventListener('click', ()=> signInWithPopup(auth, provider).then(()=>window.location.href='home.html').catch(err=>alert(err.message)));
+  googleLogin.addEventListener('click', ()=> signInWithPopup(auth, provider).then(()=>window.location.href='home.html').catch(err=>alert(err.message)));
+
+</script>
+<style>
+body{font-family:sans-serif;background:#f0f0f0;margin:0;padding:0;}
+.container{width:300px;margin:50px auto;padding:20px;background:white;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.2);}
+input,button{width:100%;padding:10px;margin:5px 0;}
+button{cursor:pointer;}
+.google-btn{background:#4285F4;color:white;border:none;}
+a{color:#4285F4;text-decoration:none;}
+</style>
+</head>
+<body>
+
+  
+<div class="container" id="signup-form">
+  <a href="index.html" class="back">← Retour</a>
+  <h2>INSCRIVEZ-VOUS</h2>
+  <input type="text" id="username" placeholder="Nom d'utilisateur">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Mot de passe">
+  <input type="text" id="phone" placeholder="Numéro de téléphone">
+  <button id="signup-btn">S'inscrire</button>
+  <p>Déjà un compte ? <button id="go-login">Se connecter</button></p>
+  <button class="google-btn" id="google-signup">S'inscrire avec Google</button>
+</div>
+
+<div class="container" id="login-form" style="display:none;">
+  <a href="index.html" class="back">← Retour</a>
+  <h2>Connexion</h2>
+  <input type="text" id="login-identifier" placeholder="Nom, Email ou Numéro">
+  <input type="password" id="login-password" placeholder="Mot de passe">
+  <button id="login-btn">Se connecter</button>
+  <p><a href="#">Mot de passe oublié ?</a></p>
+  <button class="google-btn" id="google-login">Connexion avec Google</button>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asa En Live - Publication & Chat</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #dbeafe;
+      --secondary: #64748b;
+      --accent: #f1f5f9;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Navigation */
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .nav-link.active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Main Layout */
+    .main-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 1.5rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Live Chat Section */
+    .live-chat-section {
+      display: none;
+    }
+
+    .live-chat-section.active {
+      display: block;
+    }
+
+    .chat-container {
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .chat-header {
+      padding: 1rem;
+      background: var(--primary);
+      color: white;
+      border-radius: var(--radius) var(--radius) 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--error);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .viewer-count {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .message {
+      display: flex;
+      gap: 0.75rem;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .message.system {
+      justify-content: center;
+    }
+
+    .system-message {
+      background: var(--accent);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .message-content {
+      flex: 1;
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .message-author {
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .message-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .message-text {
+      background: var(--accent);
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+    }
+
+    .message.own .message-text {
+      background: var(--primary-light);
+      color: var(--text);
+    }
+
+    .chat-input-container {
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    .chat-input-form {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.875rem;
+      resize: none;
+      max-height: 100px;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .send-message-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .send-message-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .send-message-btn:disabled {
+      background: var(--secondary);
+      cursor: not-allowed;
+    }
+
+    /* Profile Section */
+    .profile-section {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .profile-card {
+      text-align: center;
+    }
+
+    .profile-picture {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary-light);
+      margin: 0 auto 1rem;
+      display: block;
+    }
+
+    .profile-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-bio {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .profile-stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem 0;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .edit-profile-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .edit-profile-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .follow-btn {
+      background: var(--success);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      width: 100%;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .follow-btn:hover {
+      background: #0da271;
+      transform: translateY(-2px);
+    }
+
+    .follow-btn.following {
+      background: var(--secondary);
+    }
+
+    /* Create Post Section */
+    .create-post {
+      margin-bottom: 1.5rem;
+    }
+
+    .post-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .post-input {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: var(--transition);
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .post-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .image-upload-options {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .image-option-btn {
+      flex: 1;
+      padding: 1rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--accent);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .image-option-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .image-option-btn.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .image-option-icon {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .image-input-section {
+      display: none;
+    }
+
+    .image-input-section.active {
+      display: block;
+    }
+
+    .url-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+    }
+
+    .image-upload-container {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .image-upload-container:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .image-upload-container i {
+      font-size: 2rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .image-preview {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: var(--radius-sm);
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .image-upload-btn {
+      background: var(--accent);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .image-upload-btn:hover {
+      background: var(--primary-light);
+    }
+
+    .publish-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .publish-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .publish-btn:disabled {
+      background: var(--secondary);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .publish-btn.loading {
+      position: relative;
+      color: transparent;
+    }
+
+    .publish-btn.loading::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 50%;
+      margin-left: -10px;
+      margin-top: -10px;
+      border: 2px solid transparent;
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Posts Feed */
+    .post {
+      margin-bottom: 1.5rem;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .post-author-pic {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 1rem;
+    }
+
+    .post-author-info {
+      flex: 1;
+    }
+
+    .post-author-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .post-time {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .post-content {
+      margin-bottom: 1rem;
+    }
+
+    .post-image {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      margin: 1rem 0;
+      max-height: 400px;
+      object-fit: cover;
+    }
+
+    .post-stats {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      padding: 0.75rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+    }
+
+    .post-actions-bar {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 0.75rem;
+    }
+
+    .post-action {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .post-action:hover {
+      background: var(--accent);
+      color: var(--text);
+    }
+
+    .post-action.active {
+      color: var(--primary);
+    }
+
+    .post-action.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .comments-section {
+      margin-top: 1rem;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .comment-input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .comment-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .comment-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .comment-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .comment-btn:disabled {
+      background: var(--secondary);
+      cursor: not-allowed;
+    }
+
+    .comment {
+      display: flex;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: var(--accent);
+      border-radius: var(--radius);
+    }
+
+    .comment-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 0.75rem;
+    }
+
+    .comment-content {
+      flex: 1;
+    }
+
+    .comment-author {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .comment-text {
+      margin-bottom: 0.5rem;
+    }
+
+    .comment-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .comment-action {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .comment-action:hover {
+      color: var(--primary);
+    }
+
+    /* Share Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .share-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .share-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .share-option:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .share-icon {
+      font-size: 1.5rem;
+    }
+
+    .facebook { color: #1877F2; }
+    .twitter { color: #1DA1F2; }
+    .whatsapp { color: #25D366; }
+    .linkedin { color: #0A66C2; }
+    .telegram { color: #0088CC; }
+    .copy-link { color: var(--primary); }
+
+    .share-url {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .url-input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+    }
+
+    .copy-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+    }
+
+    /* Right Sidebar */
+    .sidebar-card {
+      position: sticky;
+      top: 100px;
+    }
+
+    .trending-topics {
+      list-style: none;
+    }
+
+    .topic {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topic:last-child {
+      border-bottom: none;
+    }
+
+    .topic-tag {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .topic-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .topic-stats {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius);
+      color: white;
+      font-weight: 500;
+      z-index: 1000;
+      box-shadow: var(--shadow-lg);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .notification.success {
+      background: var(--success);
+    }
+
+    .notification.error {
+      background: var(--error);
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 1fr 2fr;
+      }
+      
+      .sidebar-card {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        margin: 1rem auto;
+        padding: 0 1rem;
+      }
+      
+      .profile-section {
+        position: static;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .nav-container {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .post-actions-bar {
+        flex-wrap: wrap;
+      }
+      
+      .post-action {
+        flex: 1 0 45%;
+        margin-bottom: 0.5rem;
+      }
+      
+      .share-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .image-upload-options {
+        flex-direction: column;
+      }
+
+      .chat-container {
+        height: 500px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 1.25rem;
+      }
+      
+      .profile-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .post-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .post-author-pic {
+        margin-bottom: 0.5rem;
+      }
+      
+      .share-options {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-container {
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <h1>Asa En Live — Publication & Chat</h1>
+      <div class="nav-container">
+        <a href="index.html" class="back" style="color: white;">
+          <i class="fas fa-home"></i>
+          Retour
+        </a>
+        <a class="nav-link" id="publicationLink" href="#">
+          <i class="fas fa-newspaper"></i>
+          Publication
+        </a>
+        <a class="nav-link" id="chatLink" href="#">
+          <i class="fas fa-comments"></i>
+          Chat Live
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <!-- Left Sidebar - Profile -->
+    <aside class="profile-section">
+      <div class="card profile-card">
+        <img src="https://via.placeholder.com/120" alt="Profile Picture" class="profile-picture" id="profilePicture">
+        <h2 class="profile-name" id="profileName">Anarana</h2>
+        <p class="profile-bio" id="profileBio">Tsy mbola nampidirina ny mombamomba anao</p>
+        
+        <div class="profile-stats">
+          <div class="stat">
+            <div class="stat-value" id="postCount">0</div>
+            <div class="stat-label">Publication</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="followerCount">0</div>
+            <div class="stat-label">Mpanaraka</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="followingCount">0</div>
+            <div class="stat-label">Manaraka</div>
+          </div>
+        </div>
+        
+        <button class="edit-profile-btn" id="editProfileBtn">
+          <i class="fas fa-edit"></i>
+          Hanova ny mombamomba anao
+        </button>
+        
+        <button class="follow-btn" id="followBtn">
+          <i class="fas fa-user-plus"></i>
+          <span id="followText">Suivre</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content - Posts -->
+    <main class="posts-feed" id="publicationSection">
+      <!-- Create Post Card -->
+      <div class="card create-post">
+        <div class="post-form">
+          <textarea class="post-input" id="postText" placeholder="Inona no vaovao? Soraty eto..."></textarea>
+          
+          <!-- Image Upload Options -->
+          <div class="image-upload-options">
+            <div class="image-option-btn" id="linkOption">
+              <i class="fas fa-link image-option-icon"></i>
+              <span>Lien Image</span>
+            </div>
+            <div class="image-option-btn" id="galleryOption">
+              <i class="fas fa-image image-option-icon"></i>
+              <span>Galerie</span>
+            </div>
+          </div>
+          
+          <!-- Link Input Section -->
+          <div class="image-input-section" id="linkSection">
+            <input type="url" class="url-input" id="imageUrl" placeholder="Ampidiro ny lien an'ilay sary...">
+          </div>
+          
+          <!-- Gallery Upload Section -->
+          <div class="image-input-section" id="gallerySection">
+            <div class="image-upload-container" id="imageUploadContainer">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Tsindrio eto raha te-hampiditra sary ianao</p>
+              <input type="file" id="imageInput" accept="image/*" style="display: none;">
+              <img id="imagePreview" class="image-preview">
+            </div>
+          </div>
+          
+          <div class="post-actions">
+            <button class="image-upload-btn" id="triggerImageUpload">
+              <i class="fas fa-camera"></i>
+              Sary
+            </button>
+            <button class="publish-btn" id="publishPost">
+              <i class="fas fa-paper-plane"></i>
+              Publier
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Posts Feed -->
+      <div id="postsContainer">
+        <!-- Posts will be dynamically inserted here -->
+      </div>
+    </main>
+
+    <!-- Live Chat Section -->
+    <main class="live-chat-section" id="chatSection">
+      <div class="card">
+        <div class="chat-container">
+          <div class="chat-header">
+            <div class="chat-title">
+              <i class="fas fa-broadcast-tower"></i>
+              Chat Live
+              <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>EN DIRECT</span>
+              </div>
+            </div>
+            <div class="viewer-count">
+              <i class="fas fa-eye"></i>
+              <span id="viewerCount">0</span> viewers
+            </div>
+          </div>
+          
+          <div class="chat-messages" id="chatMessages">
+            <div class="message system">
+              <div class="system-message">
+                Bienvenue dans le chat live! Commencez à discuter avec la communauté.
+              </div>
+            </div>
+          </div>
+          
+          <div class="chat-input-container">
+            <form class="chat-input-form" id="chatForm">
+              <textarea 
+                class="chat-input" 
+                id="chatInput" 
+                placeholder="Tapez votre message..." 
+                rows="1"
+                maxlength="500"
+              ></textarea>
+              <button type="submit" class="send-message-btn" id="sendMessageBtn">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar">
+      <div class="card sidebar-card">
+        <div class="card-header">
+          <h3 class="card-title">Zava-misy malaza</h3>
+        </div>
+        <ul class="trending-topics">
+          <li class="topic">
+            <span class="topic-tag">#Asa</span>
+            <div class="topic-title">Fikarohana asa vaovao</div>
+            <div class="topic-stats">254 publication</div>
+          </li>
+          <li class="topic">
+            <span class="topic-tag">#Torolalana</span>
+            <div class="topic-title">Torolalana momba ny CV</div>
+            <div class="topic-stats">187 publication</div>
+          </li>
+          <li class="topic">
+            <span class="topic-tag">#Interview</span>
+            <div class="topic-title">Fanontaniana interview</div>
+            <div class="topic-stats">142 publication</div>
+          </li>
+          <li class="topic">
+            <span class="topic-tag">#Fampandrosoana</span>
+            <div class="topic-title">Fampandrosoana tena</div>
+            <div class="topic-stats">98 publication</div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal" id="editProfileModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Hanova ny mombamomba anao</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <form id="profileForm">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <img src="https://via.placeholder.com/100" alt="Profile Picture" class="profile-picture" id="editProfilePicture" style="width: 100px; height: 100px; cursor: pointer;">
+          <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+          <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">Tsindrio ny sary raha te-hanova</p>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+          <label for="editName" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Anarana</label>
+          <input type="text" id="editName" class="post-input" style="min-height: auto; width: 100%;">
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+          <label for="editBio" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Mombamomba anao</label>
+          <textarea id="editBio" class="post-input" style="min-height: 100px; width: 100%;"></textarea>
+        </div>
+        
+        <button type="submit" class="publish-btn" style="width: 100%;">
+          <i class="fas fa-save"></i>
+          Tehirizo
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div class="modal" id="shareModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Zaràho ity publication ity</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      
+      <div class="share-options">
+        <div class="share-option" data-platform="facebook">
+          <i class="fab fa-facebook share-icon facebook"></i>
+          <span>Facebook</span>
+        </div>
+        <div class="share-option" data-platform="twitter">
+          <i class="fab fa-twitter share-icon twitter"></i>
+          <span>Twitter</span>
+        </div>
+        <div class="share-option" data-platform="whatsapp">
+          <i class="fab fa-whatsapp share-icon whatsapp"></i>
+          <span>WhatsApp</span>
+        </div>
+        <div class="share-option" data-platform="linkedin">
+          <i class="fab fa-linkedin share-icon linkedin"></i>
+          <span>LinkedIn</span>
+        </div>
+        <div class="share-option" data-platform="telegram">
+          <i class="fab fa-telegram share-icon telegram"></i>
+          <span>Telegram</span>
+        </div>
+        <div class="share-option" id="copyLinkBtn">
+          <i class="fas fa-link share-icon copy-link"></i>
+          <span>Copy Link</span>
+        </div>
+      </div>
+      
+      <div class="share-url">
+        <input type="text" class="url-input" id="shareUrl" readonly>
+        <button class="copy-btn" id="copyUrlBtn">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBtq50XttR1S-f9RMo0otxx5jrRiY30QEE",
+      authDomain: "miasamada-4f90a.firebaseapp.com",
+      databaseURL: "https://miasamada-4f90a-default-rtdb.firebaseio.com",
+      projectId: "miasamada-4f90a",
+      storageBucket: "miasamada-4f90a.firebasestorage.app",
+      messagingSenderId: "341483369374",
+      appId: "1:341483369374:web:721451eb0df21d4ef45c8f",
+      measurementId: "G-XTH1TCS8H4"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const storage = firebase.storage();
+
+    // DOM Elements
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const editProfileModal = document.getElementById('editProfileModal');
+    const shareModal = document.getElementById('shareModal');
+    const closeModals = document.querySelectorAll('.close-modal');
+    const profileForm = document.getElementById('profileForm');
+    const profileImageInput = document.getElementById('profileImageInput');
+    const editProfilePicture = document.getElementById('editProfilePicture');
+    const imageUploadContainer = document.getElementById('imageUploadContainer');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const triggerImageUpload = document.getElementById('triggerImageUpload');
+    const publishPostBtn = document.getElementById('publishPost');
+    const postText = document.getElementById('postText');
+    const postsContainer = document.getElementById('postsContainer');
+    const copyLinkBtn = document.getElementById('copyLinkBtn');
+    const copyUrlBtn = document.getElementById('copyUrlBtn');
+    const shareUrl = document.getElementById('shareUrl');
+    const followBtn = document.getElementById('followBtn');
+    const followText = document.getElementById('followText');
+    
+    // New elements for image options
+    const linkOption = document.getElementById('linkOption');
+    const galleryOption = document.getElementById('galleryOption');
+    const linkSection = document.getElementById('linkSection');
+    const gallerySection = document.getElementById('gallerySection');
+    const imageUrl = document.getElementById('imageUrl');
+
+    // Chat elements
+    const publicationLink = document.getElementById('publicationLink');
+    const chatLink = document.getElementById('chatLink');
+    const publicationSection = document.getElementById('publicationSection');
+    const chatSection = document.getElementById('chatSection');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const viewerCount = document.getElementById('viewerCount');
+
+    // User state
+    let currentUser = {
+      id: generateUserId(),
+      name: 'Anarana',
+      bio: 'Tsy mbola nampidirina ny mombamomba anao',
+      profilePicture: 'https://via.placeholder.com/120',
+      postCount: 0,
+      followerCount: 0,
+      followingCount: 0,
+      followers: {},
+      following: {}
+    };
+
+    let selectedImageFile = null;
+    let currentPostId = null;
+    let isPublishing = false;
+    let currentImageOption = null;
+    let userReactions = {}; // Store user reactions to prevent multiple reactions
+    let currentViewers = 0;
+    let isInChat = false;
+
+    // Initialize the app
+    function init() {
+      loadUserProfile();
+      loadPosts();
+      setupEventListeners();
+      setupRealtimeListeners();
+      showPublicationSection();
+    }
+
+    // Generate a simple user ID (in a real app, use Firebase Auth)
+    function generateUserId() {
+      return 'user_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Load user profile from Firebase or localStorage
+    function loadUserProfile() {
+      const savedProfile = localStorage.getItem('userProfile');
+      if (savedProfile) {
+        currentUser = JSON.parse(savedProfile);
+        updateProfileUI();
+      }
+      
+      // Also try to load from Firebase
+      const userRef = db.ref('users/' + currentUser.id);
+      userRef.on('value', (snapshot) => {
+        const userData = snapshot.val();
+        if (userData) {
+          currentUser = { ...currentUser, ...userData };
+          updateProfileUI();
+          localStorage.setItem('userProfile', JSON.stringify(currentUser));
+        }
+      });
+    }
+
+    // Update profile UI with current user data
+    function updateProfileUI() {
+      document.getElementById('profileName').textContent = currentUser.name;
+      document.getElementById('profileBio').textContent = currentUser.bio;
+      document.getElementById('profilePicture').src = currentUser.profilePicture;
+      document.getElementById('editProfilePicture').src = currentUser.profilePicture;
+      document.getElementById('editName').value = currentUser.name;
+      document.getElementById('editBio').value = currentUser.bio;
+      document.getElementById('postCount').textContent = currentUser.postCount || 0;
+      document.getElementById('followerCount').textContent = currentUser.followerCount || 0;
+      document.getElementById('followingCount').textContent = currentUser.followingCount || 0;
+      
+      // Update follow button based on current state
+      updateFollowButton();
+    }
+
+    // Update follow button state
+    function updateFollowButton() {
+      // For now, always show follow button as we don't have multiple users
+      // In a real app, you would check if current user is viewing their own profile
+      followBtn.style.display = 'block';
+      const isFollowing = currentUser.followers && currentUser.followers[currentUser.id];
+      
+      if (isFollowing) {
+        followBtn.classList.add('following');
+        followText.textContent = 'Suivi';
+      } else {
+        followBtn.classList.remove('following');
+        followText.textContent = 'Suivre';
+      }
+    }
+
+    // Show publication section
+    function showPublicationSection() {
+      publicationSection.style.display = 'block';
+      chatSection.style.display = 'none';
+      publicationLink.classList.add('active');
+      chatLink.classList.remove('active');
+      isInChat = false;
+    }
+
+    // Show chat section
+    function showChatSection() {
+      publicationSection.style.display = 'none';
+      chatSection.style.display = 'block';
+      publicationLink.classList.remove('active');
+      chatLink.classList.add('active');
+      isInChat = true;
+      
+      // Scroll to bottom of chat
+      setTimeout(() => {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 100);
+    }
+
+    // Setup realtime listeners
+    function setupRealtimeListeners() {
+      // Listen for new posts
+      const postsRef = db.ref('posts');
+      postsRef.on('child_added', (snapshot) => {
+        const post = snapshot.val();
+        if (!document.getElementById(`post-${snapshot.key}`)) {
+          renderPost(snapshot.key, post);
+        }
+      });
+
+      // Listen for post updates (reactions, comments)
+      postsRef.on('child_changed', (snapshot) => {
+        const post = snapshot.val();
+        updatePostUI(snapshot.key, post);
+      });
+
+      // Listen for user profile updates
+      const usersRef = db.ref('users');
+      usersRef.on('child_changed', (snapshot) => {
+        if (snapshot.key === currentUser.id) {
+          const userData = snapshot.val();
+          currentUser = { ...currentUser, ...userData };
+          updateProfileUI();
+        }
+      });
+
+      // Listen for chat messages
+      const chatRef = db.ref('liveChat/messages').orderByChild('timestamp').limitToLast(100);
+      chatRef.on('child_added', (snapshot) => {
+        const message = snapshot.val();
+        renderChatMessage(snapshot.key, message);
+      });
+
+      // Listen for viewer count
+      const viewersRef = db.ref('liveChat/viewers');
+      viewersRef.on('value', (snapshot) => {
+        const viewers = snapshot.val() || {};
+        currentViewers = Object.keys(viewers).length;
+        viewerCount.textContent = currentViewers;
+      });
+
+      // Add current user to viewers
+      const userViewerRef = db.ref('liveChat/viewers/' + currentUser.id);
+      userViewerRef.set({
+        name: currentUser.name,
+        joinedAt: Date.now()
+      });
+
+      // Remove user from viewers when they leave
+      window.addEventListener('beforeunload', () => {
+        userViewerRef.remove();
+      });
+    }
+
+    // Render a chat message
+    function renderChatMessage(messageId, message) {
+      // Check if message already exists
+      if (document.getElementById(`message-${messageId}`)) {
+        return;
+      }
+
+      const messageElement = document.createElement('div');
+      messageElement.className = `message ${message.authorId === currentUser.id ? 'own' : ''}`;
+      messageElement.id = `message-${messageId}`;
+
+      if (message.type === 'system') {
+        messageElement.innerHTML = `
+          <div class="system-message">${escapeHtml(message.text)}</div>
+        `;
+      } else {
+        messageElement.innerHTML = `
+          <img src="${message.authorProfilePicture || 'https://via.placeholder.com/36'}" 
+               alt="Profile" class="message-avatar">
+          <div class="message-content">
+            <div class="message-header">
+              <span class="message-author">${escapeHtml(message.authorName)}</span>
+              <span class="message-time">${formatTime(message.timestamp)}</span>
+            </div>
+            <div class="message-text">${escapeHtml(message.text)}</div>
+          </div>
+        `;
+      }
+
+      chatMessages.appendChild(messageElement);
+      
+      // Auto scroll to bottom if user is near the bottom
+      const isNearBottom = chatMessages.scrollHeight - chatMessages.clientHeight <= chatMessages.scrollTop + 100;
+      if (isNearBottom) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+
+    // Load posts from Firebase
+    function loadPosts() {
+      const postsRef = db.ref('posts').orderByChild('timestamp');
+      postsRef.once('value').then((snapshot) => {
+        const posts = snapshot.val();
+        postsContainer.innerHTML = '';
+        
+        if (!posts) {
+          postsContainer.innerHTML = `
+            <div class="card">
+              <div style="text-align: center; padding: 2rem;">
+                <i class="fas fa-newspaper" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">Tsy mbola misy publication</h3>
+                <p style="color: var(--text-muted);">Ianao no ho voalohany mamorona publication!</p>
+              </div>
+            </div>
+          `;
+          return;
+        }
+        
+        const postsArray = Object.entries(posts).reverse();
+        postsArray.forEach(([postId, post]) => {
+          renderPost(postId, post);
+        });
+      });
+    }
+
+    // Render a single post
+    function renderPost(postId, post) {
+      // Check if post already exists
+      if (document.getElementById(`post-${postId}`)) {
+        updatePostUI(postId, post);
+        return;
+      }
+
+      const postElement = document.createElement('div');
+      postElement.className = 'card post fade-in';
+      postElement.id = `post-${postId}`;
+      
+      // Check if user has already reacted to this post
+      const userHasReacted = userReactions[postId];
+      const reactionCounts = post.reactions ? {
+        like: post.reactions.like || 0,
+        love: post.reactions.love || 0,
+        clap: post.reactions.clap || 0
+      } : { like: 0, love: 0, clap: 0 };
+      
+      const totalReactions = reactionCounts.like + reactionCounts.love + reactionCounts.clap;
+      const commentCount = post.comments ? Object.keys(post.comments).length : 0;
+      
+      postElement.innerHTML = `
+        <div class="post-header">
+          <img src="${post.authorProfilePicture || 'https://via.placeholder.com/50'}" alt="Profile" class="post-author-pic">
+          <div class="post-author-info">
+            <div class="post-author-name">${escapeHtml(post.authorName)}</div>
+            <div class="post-time">${formatTime(post.timestamp)}</div>
+          </div>
+        </div>
+        <div class="post-content">
+          <p>${escapeHtml(post.text)}</p>
+          ${post.imageUrl ? `<img src="${post.imageUrl}" alt="Post Image" class="post-image">` : ''}
+        </div>
+        <div class="post-stats">
+          <span>${totalReactions} Reaction</span>
+          <span>${commentCount} Commentaire</span>
+        </div>
+        <div class="post-actions-bar">
+          <button class="post-action ${userHasReacted === 'like' ? 'active' : ''} ${userHasReacted ? 'disabled' : ''}" 
+                  data-post="${postId}" data-reaction="like" ${userHasReacted ? 'disabled' : ''}>
+            <i class="fas fa-thumbs-up"></i> Like <span>${reactionCounts.like}</span>
+          </button>
+          <button class="post-action ${userHasReacted === 'love' ? 'active' : ''} ${userHasReacted ? 'disabled' : ''}" 
+                  data-post="${postId}" data-reaction="love" ${userHasReacted ? 'disabled' : ''}>
+            <i class="fas fa-heart"></i> Love <span>${reactionCounts.love}</span>
+          </button>
+          <button class="post-action ${userHasReacted === 'clap' ? 'active' : ''} ${userHasReacted ? 'disabled' : ''}" 
+                  data-post="${postId}" data-reaction="clap" ${userHasReacted ? 'disabled' : ''}>
+            <i class="fas fa-hands-clapping"></i> Clap <span>${reactionCounts.clap}</span>
+          </button>
+          <button class="post-action" data-post="${postId}" id="commentBtn-${postId}">
+            <i class="fas fa-comment"></i> Commenter
+          </button>
+          <button class="post-action" data-post="${postId}" id="shareBtn-${postId}">
+            <i class="fas fa-share"></i> Partager
+          </button>
+        </div>
+        <div class="comments-section" id="comments-${postId}">
+          <div class="comment-form">
+            <input type="text" class="comment-input" id="commentInput-${postId}" placeholder="Ampidiro ny commentaire...">
+            <button class="comment-btn" data-post="${postId}" id="commentSubmit-${postId}">
+              <i class="fas fa-paper-plane"></i> Envoyer
+            </button>
+          </div>
+          <div id="commentsList-${postId}">
+            ${post.comments ? renderComments(post.comments) : ''}
+          </div>
+        </div>
+      `;
+      postsContainer.appendChild(postElement);
+      
+      // Add event listeners for this post
+      setupPostEventListeners(postId);
+    }
+
+    // Update post UI when data changes
+    function updatePostUI(postId, post) {
+      const postElement = document.getElementById(`post-${postId}`);
+      if (!postElement) return;
+      
+      const reactionCounts = post.reactions ? {
+        like: post.reactions.like || 0,
+        love: post.reactions.love || 0,
+        clap: post.reactions.clap || 0
+      } : { like: 0, love: 0, clap: 0 };
+      
+      const totalReactions = reactionCounts.like + reactionCounts.love + reactionCounts.clap;
+      const commentCount = post.comments ? Object.keys(post.comments).length : 0;
+      
+      // Update reaction counts
+      const likeBtn = postElement.querySelector('[data-reaction="like"]');
+      const loveBtn = postElement.querySelector('[data-reaction="love"]');
+      const clapBtn = postElement.querySelector('[data-reaction="clap"]');
+      
+      if (likeBtn) likeBtn.querySelector('span').textContent = reactionCounts.like;
+      if (loveBtn) loveBtn.querySelector('span').textContent = reactionCounts.love;
+      if (clapBtn) clapBtn.querySelector('span').textContent = reactionCounts.clap;
+      
+      // Update stats
+      const statsElement = postElement.querySelector('.post-stats');
+      if (statsElement) {
+        statsElement.innerHTML = `
+          <span>${totalReactions} Reaction</span>
+          <span>${commentCount} Commentaire</span>
+        `;
+      }
+      
+      // Update comments
+      const commentsList = document.getElementById(`commentsList-${postId}`);
+      if (commentsList && post.comments) {
+        commentsList.innerHTML = renderComments(post.comments);
+      }
+    }
+
+    // Render comments for a post
+    function renderComments(comments) {
+      if (!comments) return '';
+      
+      const commentsArray = Object.entries(comments);
+      return commentsArray.map(([commentId, comment]) => `
+        <div class="comment">
+          <img src="${comment.authorProfilePicture || 'https://via.placeholder.com/40'}" alt="Profile" class="comment-avatar">
+          <div class="comment-content">
+            <div class="comment-author">${escapeHtml(comment.authorName)}</div>
+            <div class="comment-text">${escapeHtml(comment.text)}</div>
+            <div class="comment-actions">
+              <button class="comment-action">Like</button>
+              <button class="comment-action">Reply</button>
+              <span class="comment-time">${formatTime(comment.timestamp)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Format timestamp to readable time
+    function formatTime(timestamp) {
+      const now = new Date();
+      const postTime = new Date(timestamp);
+      const diffMs = now - postTime;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+      
+      if (diffMins < 1) return 'Maintenant';
+      if (diffMins < 60) return `Il y a ${diffMins} min`;
+      if (diffHours < 24) return `Il y a ${diffHours} h`;
+      if (diffDays < 7) return `Il y a ${diffDays} j`;
+      
+      return postTime.toLocaleDateString();
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Navigation
+      publicationLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPublicationSection();
+      });
+      
+      chatLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showChatSection();
+      });
+      
+      // Profile editing
+      editProfileBtn.addEventListener('click', () => {
+        editProfileModal.style.display = 'flex';
+      });
+      
+      editProfilePicture.addEventListener('click', () => {
+        profileImageInput.click();
+      });
+      
+      profileImageInput.addEventListener('change', handleProfileImageUpload);
+      
+      profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveProfile();
+      });
+      
+      // Image upload options
+      linkOption.addEventListener('click', () => {
+        setImageOption('link');
+      });
+      
+      galleryOption.addEventListener('click', () => {
+        setImageOption('gallery');
+      });
+      
+      // Post creation
+      triggerImageUpload.addEventListener('click', () => {
+        imageInput.click();
+      });
+      
+      imageUploadContainer.addEventListener('click', () => {
+        imageInput.click();
+      });
+      
+      imageInput.addEventListener('change', handlePostImageUpload);
+      
+      publishPostBtn.addEventListener('click', createPost);
+      
+      // Follow button
+      followBtn.addEventListener('click', toggleFollow);
+      
+      // Chat functionality
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        sendChatMessage();
+      });
+      
+      // Auto-resize chat input
+      chatInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+      });
+      
+      // Modals
+      closeModals.forEach(btn => {
+        btn.addEventListener('click', () => {
+          editProfileModal.style.display = 'none';
+          shareModal.style.display = 'none';
+        });
+      });
+      
+      // Share functionality
+      copyLinkBtn.addEventListener('click', copyPostLink);
+      copyUrlBtn.addEventListener('click', copyUrlToClipboard);
+      
+      // Close modals when clicking outside
+      window.addEventListener('click', (e) => {
+        if (e.target === editProfileModal) {
+          editProfileModal.style.display = 'none';
+        }
+        if (e.target === shareModal) {
+          shareModal.style.display = 'none';
+        }
+      });
+    }
+
+    // Set image upload option
+    function setImageOption(option) {
+      currentImageOption = option;
+      
+      // Reset all options
+      linkOption.classList.remove('active');
+      galleryOption.classList.remove('active');
+      linkSection.classList.remove('active');
+      gallerySection.classList.remove('active');
+      
+      // Set active option
+      if (option === 'link') {
+        linkOption.classList.add('active');
+        linkSection.classList.add('active');
+      } else if (option === 'gallery') {
+        galleryOption.classList.add('active');
+        gallerySection.classList.add('active');
+      }
+    }
+
+    // Setup event listeners for a specific post
+    function setupPostEventListeners(postId) {
+      // Reaction buttons
+      document.querySelectorAll(`[data-post="${postId}"][data-reaction]`).forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const reaction = e.currentTarget.getAttribute('data-reaction');
+          addReaction(postId, reaction);
+        });
+      });
+      
+      // Comment button
+      const commentBtn = document.getElementById(`commentBtn-${postId}`);
+      if (commentBtn) {
+        commentBtn.addEventListener('click', () => {
+          document.getElementById(`commentInput-${postId}`).focus();
+        });
+      }
+      
+      // Share button
+      const shareBtn = document.getElementById(`shareBtn-${postId}`);
+      if (shareBtn) {
+        shareBtn.addEventListener('click', () => {
+          currentPostId = postId;
+          shareUrl.value = `${window.location.origin}${window.location.pathname}?post=${postId}`;
+          shareModal.style.display = 'flex';
+        });
+      }
+      
+      // Comment submit button
+      const commentSubmitBtn = document.getElementById(`commentSubmit-${postId}`);
+      if (commentSubmitBtn) {
+        commentSubmitBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const commentInput = document.getElementById(`commentInput-${postId}`);
+          const commentText = commentInput.value.trim();
+          
+          if (commentText) {
+            addComment(postId, commentText);
+            commentInput.value = '';
+          }
+        });
+      }
+      
+      // Comment input enter key
+      const commentInput = document.getElementById(`commentInput-${postId}`);
+      if (commentInput) {
+        commentInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const commentText = commentInput.value.trim();
+            
+            if (commentText) {
+              addComment(postId, commentText);
+              commentInput.value = '';
+            }
+          }
+        });
+      }
+    }
+
+    // Handle profile image upload
+    function handleProfileImageUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          currentUser.profilePicture = event.target.result;
+          editProfilePicture.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Handle post image upload
+    function handlePostImageUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        selectedImageFile = file;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          imagePreview.src = event.target.result;
+          imagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Save profile to Firebase and localStorage
+    function saveProfile() {
+      currentUser.name = document.getElementById('editName').value;
+      currentUser.bio = document.getElementById('editBio').value;
+      
+      updateUserInFirebase();
+      updateProfileUI();
+      editProfileModal.style.display = 'none';
+      
+      // Show success message
+      showNotification('Profile updated successfully!', 'success');
+    }
+
+    // Update user in Firebase
+    function updateUserInFirebase() {
+      const userRef = db.ref('users/' + currentUser.id);
+      userRef.set(currentUser);
+      localStorage.setItem('userProfile', JSON.stringify(currentUser));
+    }
+
+    // Toggle follow status
+    function toggleFollow() {
+      const isFollowing = currentUser.followers && currentUser.followers[currentUser.id];
+      
+      if (isFollowing) {
+        // Unfollow
+        if (currentUser.followers) {
+          delete currentUser.followers[currentUser.id];
+        }
+        currentUser.followerCount = Math.max(0, (currentUser.followerCount || 0) - 1);
+      } else {
+        // Follow
+        if (!currentUser.followers) {
+          currentUser.followers = {};
+        }
+        currentUser.followers[currentUser.id] = true;
+        currentUser.followerCount = (currentUser.followerCount || 0) + 1;
+      }
+      
+      updateUserInFirebase();
+      updateFollowButton();
+      
+      showNotification(isFollowing ? 'Unfollowed' : 'Followed', 'success');
+    }
+
+    // Send chat message
+    function sendChatMessage() {
+      const text = chatInput.value.trim();
+      
+      if (!text) {
+        return;
+      }
+      
+      const messageData = {
+        text: text,
+        authorId: currentUser.id,
+        authorName: currentUser.name,
+        authorProfilePicture: currentUser.profilePicture,
+        timestamp: Date.now(),
+        type: 'user'
+      };
+      
+      const messagesRef = db.ref('liveChat/messages');
+      const newMessageRef = messagesRef.push();
+      
+      newMessageRef.set(messageData)
+        .then(() => {
+          chatInput.value = '';
+          chatInput.style.height = 'auto';
+          
+          // Scroll to bottom
+          setTimeout(() => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }, 100);
+        })
+        .catch(error => {
+          console.error('Error sending message:', error);
+          showNotification('Erreur lors de l\'envoi du message', 'error');
+        });
+    }
+
+    // Create a new post
+    function createPost() {
+      if (isPublishing) return;
+      
+      const text = postText.value.trim();
+      let imageUrlValue = '';
+      
+      // Check image based on selected option
+      if (currentImageOption === 'link') {
+        imageUrlValue = imageUrl.value.trim();
+        if (!text && !imageUrlValue) {
+          showNotification('Add text or image to publish a post', 'error');
+          return;
+        }
+      } else if (currentImageOption === 'gallery') {
+        if (!text && !selectedImageFile) {
+          showNotification('Add text or image to publish a post', 'error');
+          return;
+        }
+      } else {
+        if (!text) {
+          showNotification('Add text to publish a post', 'error');
+          return;
+        }
+      }
+      
+      isPublishing = true;
+      publishPostBtn.disabled = true;
+      publishPostBtn.classList.add('loading');
+      
+      const postData = {
+        text: text,
+        authorId: currentUser.id,
+        authorName: currentUser.name,
+        authorProfilePicture: currentUser.profilePicture,
+        timestamp: Date.now(),
+        reactions: {
+          like: 0,
+          love: 0,
+          clap: 0
+        }
+      };
+      
+      // Handle image based on selected option
+      let uploadPromise;
+      
+      if (currentImageOption === 'link' && imageUrlValue) {
+        // Use direct image URL
+        postData.imageUrl = imageUrlValue;
+        uploadPromise = Promise.resolve();
+      } else if (currentImageOption === 'gallery' && selectedImageFile) {
+        // Upload image to Firebase Storage
+        uploadPromise = uploadImage(selectedImageFile)
+          .then(url => {
+            postData.imageUrl = url;
+          });
+      } else {
+        uploadPromise = Promise.resolve();
+      }
+      
+      uploadPromise
+        .then(() => savePostToFirebase(postData))
+        .then(() => {
+          // Reset form
+          postText.value = '';
+          imageUrl.value = '';
+          imagePreview.style.display = 'none';
+          selectedImageFile = null;
+          imageInput.value = '';
+          setImageOption(null);
+          
+          // Show success message
+          showNotification('Post published successfully!', 'success');
+        })
+        .catch(error => {
+          console.error('Error publishing post:', error);
+          showNotification('Error publishing post', 'error');
+        })
+        .finally(() => {
+          isPublishing = false;
+          publishPostBtn.disabled = false;
+          publishPostBtn.classList.remove('loading');
+        });
+    }
+
+    // Upload image to Firebase Storage
+    function uploadImage(file) {
+      return new Promise((resolve, reject) => {
+        const storageRef = storage.ref();
+        const imageRef = storageRef.child('posts/' + Date.now() + '_' + file.name);
+        
+        imageRef.put(file)
+          .then(snapshot => snapshot.ref.getDownloadURL())
+          .then(url => resolve(url))
+          .catch(error => reject(error));
+      });
+    }
+
+    // Save post to Firebase
+    function savePostToFirebase(postData) {
+      return new Promise((resolve, reject) => {
+        const postsRef = db.ref('posts');
+        const newPostRef = postsRef.push();
+        
+        newPostRef.set(postData)
+          .then(() => resolve())
+          .catch(error => reject(error));
+      });
+    }
+
+    // Add reaction to a post
+    function addReaction(postId, reaction) {
+      // Check if user already reacted to this post
+      if (userReactions[postId]) {
+        showNotification('Vous avez déjà réagi à cette publication', 'error');
+        return;
+      }
+      
+      const reactionRef = db.ref(`posts/${postId}/reactions/${reaction}`);
+      
+      reactionRef.transaction(currentValue => {
+        return (currentValue || 0) + 1;
+      });
+      
+      // Mark that user has reacted to this post
+      userReactions[postId] = reaction;
+      
+      // Disable reaction buttons for this post
+      document.querySelectorAll(`[data-post="${postId}"][data-reaction]`).forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('disabled');
+      });
+      
+      // Mark the clicked reaction as active
+      const clickedBtn = document.querySelector(`[data-post="${postId}"][data-reaction="${reaction}"]`);
+      if (clickedBtn) {
+        clickedBtn.classList.add('active');
+      }
+    }
+
+    // Add comment to a post
+    function addComment(postId, text) {
+      const commentData = {
+        text: text,
+        authorId: currentUser.id,
+        authorName: currentUser.name,
+        authorProfilePicture: currentUser.profilePicture,
+        timestamp: Date.now()
+      };
+      
+      const commentsRef = db.ref(`posts/${postId}/comments`);
+      const newCommentRef = commentsRef.push();
+      
+      newCommentRef.set(commentData)
+        .then(() => {
+          showNotification('Commentaire ajouté!', 'success');
+        })
+        .catch(error => {
+          console.error('Error adding comment:', error);
+          showNotification('Erreur lors de l\'ajout du commentaire', 'error');
+        });
+    }
+
+    // Copy post link to clipboard
+    function copyPostLink() {
+      copyUrlToClipboard();
+      showNotification('Link copied to clipboard!', 'success');
+    }
+
+    // Copy URL to clipboard
+    function copyUrlToClipboard() {
+      shareUrl.select();
+      document.execCommand('copy');
+      showNotification('Link copied to clipboard!', 'success');
+    }
+
+    // Show notification
+    function showNotification(message, type) {
+      // Remove existing notifications
+      const existingNotifications = document.querySelectorAll('.notification');
+      existingNotifications.forEach(notification => {
+        document.body.removeChild(notification);
+      });
+      
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.textContent = message;
+      notification.className = `notification ${type}`;
+      
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 100);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+    }
+
+    // Utility function to escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Initialize the app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
